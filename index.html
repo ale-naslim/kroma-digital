@@ -1,0 +1,964 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--kp:#7C3AED;--kp2:#5B21B6;--kl:#F5F3FF;--kg:#6B7280;--kd:#111827;--kw:#fff}
+body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary);background:transparent}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);position:sticky;top:0;z-index:100}
+.logo{font-size:20px;font-weight:500;color:#7C3AED;letter-spacing:-0.5px;cursor:pointer}
+.logo span{color:var(--color-text-primary)}
+.nav-links{display:flex;gap:24px}
+.nav-link{font-size:13px;color:var(--color-text-secondary);cursor:pointer;padding:4px 0;border-bottom:1.5px solid transparent;transition:all .2s}
+.nav-link:hover,.nav-link.active{color:#7C3AED;border-bottom-color:#7C3AED}
+.btn{padding:8px 18px;border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;transition:all .2s;border:none}
+.btn-primary{background:#7C3AED;color:#fff}
+.btn-primary:hover{background:#5B21B6}
+.btn-outline{background:transparent;border:0.5px solid var(--color-border-secondary);color:var(--color-text-primary)}
+.btn-outline:hover{background:var(--color-background-secondary)}
+.page{display:none}
+.page.active{display:block}
+
+.hero{padding:80px 32px 64px;text-align:center;background:linear-gradient(160deg,#F5F3FF 0%,var(--color-background-primary) 60%)}
+.hero-tag{display:inline-block;background:#EDE9FE;color:#5B21B6;font-size:12px;padding:4px 12px;border-radius:20px;margin-bottom:20px}
+.hero h1{font-size:42px;font-weight:500;line-height:1.15;margin-bottom:16px;max-width:640px;margin-left:auto;margin-right:auto}
+.hero h1 em{font-style:normal;color:#7C3AED}
+.hero p{font-size:15px;color:var(--color-text-secondary);max-width:480px;margin:0 auto 32px;line-height:1.7}
+.hero-btns{display:flex;gap:12px;justify-content:center}
+.services{padding:64px 32px;background:var(--color-background-primary)}
+.section-label{font-size:12px;color:#7C3AED;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.section-title{font-size:26px;font-weight:500;margin-bottom:8px}
+.section-sub{font-size:14px;color:var(--color-text-secondary);margin-bottom:40px;line-height:1.6}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.card{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:24px;border:0.5px solid var(--color-border-tertiary)}
+.card-icon{width:36px;height:36px;background:#EDE9FE;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.card-icon svg{width:18px;height:18px;fill:#7C3AED}
+.card h3{font-size:14px;font-weight:500;margin-bottom:6px}
+.card p{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.about{padding:64px 32px;background:var(--color-background-secondary)}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;max-width:900px;margin:0 auto}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+.stat{background:var(--color-background-primary);border-radius:var(--border-radius-md);padding:16px;text-align:center;border:0.5px solid var(--color-border-tertiary)}
+.stat-n{font-size:24px;font-weight:500;color:#7C3AED}
+.stat-l{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.ethics-banner{padding:48px 32px;background:#7C3AED;text-align:center;cursor:pointer;transition:background .2s}
+.ethics-banner:hover{background:#5B21B6}
+.ethics-banner h2{font-size:22px;font-weight:500;color:#fff;margin-bottom:8px}
+.ethics-banner p{font-size:14px;color:#DDD6FE;margin-bottom:20px}
+.ethics-banner .btn-white{background:#fff;color:#7C3AED;padding:10px 22px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .2s}
+.ethics-banner .btn-white:hover{background:#F5F3FF}
+.contact{padding:64px 32px;background:var(--color-background-primary)}
+.contact-inner{max-width:500px;margin:0 auto}
+.input-group{margin-bottom:16px}
+.input-group label{display:block;font-size:13px;color:var(--color-text-secondary);margin-bottom:6px}
+.input-group input,.input-group textarea,.input-group select{width:100%;padding:10px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:14px;font-family:inherit;resize:vertical}
+.input-group textarea{min-height:100px}
+.footer{padding:32px;background:var(--color-background-secondary);border-top:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between}
+.footer-links{display:flex;gap:20px}
+.footer-link{font-size:12px;color:var(--color-text-secondary);cursor:pointer}
+.footer-link:hover{color:#7C3AED}
+
+.policy-page{padding:48px 32px;max-width:800px;margin:0 auto}
+.policy-hero{background:#F5F3FF;border-radius:var(--border-radius-lg);padding:40px;margin-bottom:40px;border:0.5px solid #DDD6FE}
+.policy-hero h1{font-size:26px;font-weight:500;color:#5B21B6;margin-bottom:8px}
+.policy-hero p{font-size:14px;color:var(--color-text-secondary);line-height:1.7}
+.policy-meta{display:flex;gap:24px;margin-top:20px;flex-wrap:wrap}
+.policy-meta-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary)}
+.policy-meta-dot{width:6px;height:6px;border-radius:50%;background:#7C3AED;flex-shrink:0}
+.policy-nav{display:flex;flex-direction:column;gap:4px;margin-bottom:40px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:20px;border:0.5px solid var(--color-border-tertiary)}
+.policy-nav-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.policy-nav-link{font-size:13px;color:#7C3AED;cursor:pointer;padding:3px 0}
+.policy-nav-link:hover{text-decoration:underline}
+.policy-section{margin-bottom:40px;padding-bottom:40px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.policy-section:last-child{border-bottom:none}
+.policy-section h2{font-size:18px;font-weight:500;color:#5B21B6;margin-bottom:12px;padding-top:12px}
+.policy-section h3{font-size:14px;font-weight:500;color:var(--color-text-primary);margin:16px 0 8px}
+.policy-section p{font-size:14px;color:var(--color-text-secondary);line-height:1.75;margin-bottom:10px}
+.policy-section ul{padding-left:20px;margin-bottom:10px}
+.policy-section ul li{font-size:14px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:4px}
+.principle-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:16px}
+.principle-card{background:#F5F3FF;border-radius:var(--border-radius-md);padding:16px;border:0.5px solid #DDD6FE}
+.principle-card h4{font-size:13px;font-weight:500;color:#5B21B6;margin-bottom:4px}
+.principle-card p{font-size:12px;color:#7C3AED;line-height:1.5;margin:0}
+.download-box{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:24px;border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:32px;flex-wrap:wrap}
+.download-box div h3{font-size:14px;font-weight:500;margin-bottom:4px}
+.download-box div p{font-size:13px;color:var(--color-text-secondary);margin:0}
+</style>
+
+<nav class="nav">
+  <div class="logo" onclick="showPage('home')">Kroma<span>Digital</span></div>
+  <div class="nav-links">
+    <span class="nav-link active" onclick="showPage('home',this)">Início</span>
+    <span class="nav-link" onclick="showPage('services',this)">Serviços</span>
+    <span class="nav-link" onclick="showPage('about',this)">Sobre</span>
+    <span class="nav-link" onclick="showPage('ethics',this)">Ética & IA</span>
+    <span class="nav-link" onclick="showPage('contact',this)">Contato</span>
+  </div>
+  <button class="btn btn-primary" onclick="showPage('contact',null)">Fale conosco</button>
+</nav>
+
+<div id="home" class="page active">
+  <section class="hero">
+    <div class="hero-tag">Agência Full Service • São Paulo</div>
+    <h1>Marketing que <em>transforma</em> marcas em movimento</h1>
+    <p>Combinamos criatividade disruptiva e inteligência artificial responsável para gerar resultados reais para o seu negócio.</p>
+    <div class="hero-btns">
+      <button class="btn btn-primary" onclick="showPage('contact',null)">Começar projeto</button>
+      <button class="btn btn-outline" onclick="showPage('services',null)">Ver serviços</button>
+    </div>
+  </section>
+
+  <section class="services" id="s-services">
+    <div class="section-label">O que fazemos</div>
+    <div class="section-title">Soluções 360° para a sua marca</div>
+    <div class="section-sub">Do planejamento à execução, cobrimos todo o espectro do marketing digital moderno.</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg></div>
+        <h3>Performance & Growth</h3>
+        <p>Mídia paga, SEO, CRO e analytics para escalar seus resultados com eficiência.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+        <h3>Branding & Conteúdo</h3>
+        <p>Identidade de marca, copywriting e produção criativa que conectam e engajam.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+        <h3>Social Media</h3>
+        <p>Estratégia, gestão e monitoramento de redes sociais com inteligência de dados.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+        <h3>Tecnologia & IA</h3>
+        <p>Automação, MarTech e IA generativa aplicada ao marketing de forma ética.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
+        <h3>Consultoria Estratégica</h3>
+        <p>Planejamento de comunicação e inteligência de mercado para decisões melhores.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="ethics-banner" onclick="showPage('ethics',null)">
+    <h2>Usamos IA com responsabilidade</h2>
+    <p>Transparência e ética são parte do nosso DNA. Conheça nossa Política de Ética em IA.</p>
+    <button class="btn-white">Acessar a Política →</button>
+  </div>
+
+  <section class="about" id="s-about">
+    <div class="about-inner">
+      <div>
+        <div class="section-label">Sobre a Kroma</div>
+        <div class="section-title">Cor, espectro e propósito</div>
+        <p style="font-size:14px;color:var(--color-text-secondary);line-height:1.75;margin-bottom:12px">Fundada em 2021, nossa agência nasceu com a convicção de que marcas vivas são multidimensionais: têm voz, dados, emoção e propósito.</p>
+        <p style="font-size:14px;color:var(--color-text-secondary);line-height:1.75">Com sede em São Paulo, atendemos clientes de pequeno a grande porte nos segmentos de varejo, educação, saúde, tecnologia e entretenimento.</p>
+        <div class="about-stats">
+          <div class="stat"><div class="stat-n">60+</div><div class="stat-l">Profissionais</div></div>
+          <div class="stat"><div class="stat-n">4+</div><div class="stat-l">Anos de mercado</div></div>
+          <div class="stat"><div class="stat-n">120+</div><div class="stat-l">Clientes atendidos</div></div>
+          <div class="stat"><div class="stat-n">5</div><div class="stat-l">Áreas de atuação</div></div>
+        </div>
+      </div>
+      <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);padding:28px;border:0.5px solid var(--color-border-tertiary)">
+        <p style="font-size:13px;color:#7C3AED;font-weight:500;margin-bottom:6px">Nossa missão</p>
+        <p style="font-size:15px;line-height:1.7;color:var(--color-text-primary);margin-bottom:20px">"Transformar a comunicação de empresas por meio de estratégias integradas que combinam criatividade disruptiva e inteligência artificial de forma responsável."</p>
+        <div style="border-top:0.5px solid var(--color-border-tertiary);padding-top:16px">
+          <p style="font-size:12px;color:var(--color-text-secondary)">Valores que nos guiam</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:11px;padding:3px 10px;border-radius:20px">Transparência</span>
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:11px;padding:3px 10px;border-radius:20px">Inovação</span>
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:11px;padding:3px 10px;border-radius:20px">Responsabilidade</span>
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:11px;padding:3px 10px;border-radius:20px">Diversidade</span>
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:11px;padding:3px 10px;border-radius:20px">Resultado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="s-contact">
+    <div class="contact-inner">
+      <div style="text-align:center;margin-bottom:32px">
+        <div class="section-label">Contato</div>
+        <div class="section-title">Vamos conversar?</div>
+        <p style="font-size:14px;color:var(--color-text-secondary)">Preencha o formulário e nosso time entra em contato em até 24 horas.</p>
+      </div>
+      <div class="input-group"><label>Nome</label><input type="text" placeholder="Seu nome completo"></div>
+      <div class="input-group"><label>E-mail</label><input type="email" placeholder="seu@email.com"></div>
+      <div class="input-group"><label>Empresa</label><input type="text" placeholder="Nome da sua empresa"></div>
+      <div class="input-group">
+        <label>Área de interesse</label>
+        <select>
+          <option>Performance & Growth</option>
+          <option>Branding & Conteúdo</option>
+          <option>Social Media</option>
+          <option>Tecnologia & IA</option>
+          <option>Consultoria Estratégica</option>
+        </select>
+      </div>
+      <div class="input-group"><label>Mensagem</label><textarea placeholder="Conte um pouco sobre seu projeto..."></textarea></div>
+      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px">Enviar mensagem</button>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PÁGINA: SERVIÇOS
+═══════════════════════════════════════════ -->
+<div id="services" class="page">
+  <section class="hero" style="padding:60px 32px 48px">
+    <div class="hero-tag">Nossas soluções</div>
+    <h1>Tudo que sua marca precisa, <em>num só lugar</em></h1>
+    <p>Cinco áreas integradas que trabalham juntas para entregar resultados consistentes, do planejamento à execução.</p>
+  </section>
+
+  <section style="padding:0 32px 64px;background:var(--color-background-primary)">
+    <!-- Performance & Growth -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;max-width:900px;margin:0 auto 56px;padding-top:48px;border-top:0.5px solid var(--color-border-tertiary)">
+      <div>
+        <div style="width:44px;height:44px;background:#EDE9FE;border-radius:var(--border-radius-lg);display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#7C3AED"><path d="M3 3h7v7H3zm0 11h7v7H3zm11-11h7v7h-7zm0 11h7v7h-7z"/></svg>
+        </div>
+        <div class="section-label">01</div>
+        <div class="section-title" style="font-size:22px">Performance & Growth</div>
+        <p style="font-size:14px;color:var(--color-text-secondary);line-height:1.75;margin-bottom:20px">Escalamos seus resultados com dados, não com achismos. Nossa equipe de performance combina mídia paga, SEO técnico, CRO e analytics avançado para entregar crescimento mensurável.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--color-text-secondary)"><span style="width:6px;height:6px;border-radius:50%;background:#7C3AED;flex-shrink:0"></span>Mídia paga (Meta, Google, LinkedIn, TikTok)</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--color-text-secondary)"><span style="width:6px;height:6px;border-radius:50%;background:#7C3AED;flex-shrink:0"></span>SEO técnico e de conteúdo</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--color-text-secondary)"><span style="width:6px;height:6px;border-radius:50%;background:#7C3AED;flex-shrink:0"></span>CRO e testes A/B</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--color-text-secondary)"><span style="width:6px;height:6px;border-radius:50%;background:#7C3AED;flex-shrink:0"></span>BI e dashboards de marketing</div>
+        </div>
+      </div>
+      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:28px;border:0.5px solid var(--color-border-tertiary)">
+        <p style="font-size:12px;color:#7C3AED;font-weight:500;margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em">Resultado típico</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="text-align:center;padding:16px;background:var(--color-background-primary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)"><div style="font-size:22px;font-weight:500;color:#7C3AED">3,2×</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">ROAS médio</div></div>
+          <div style="text-align:center;padding:16px;background:var(--color-background-primary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)"><div style="font-size:22px;font-weight:500;color:#7C3AED">-38%</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">CPA vs. anterior</div></div>
+          <div style="text-align:center;padding:16px;background:var(--color-background-primary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)"><div style="font-size:22px;font-weight:500;color:#7C3AED">+180%</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">Tráfego orgânico</div></div>
+          <div style="text-align:center;padding:16px;background:var(--color-background-primary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)"><div style="font-size:22px;font-weight:500;color:#7C3AED">+22pp</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">Taxa de conversão</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Branding & Conteúdo -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;max-width:900px;margin:0 auto 56px;padding-top:48px;border-top:0.5px solid var(--color-border-tertiary)">
+      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:28px;border:0.5px solid var(--color-border-tertiary)">
+        <p style="font-size:12px;color:#7C3AED;font-weight:500;margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em">O que entregamos</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="padding:10px 14px;background:var(--color-background-primary);border-radius:var(--border-radius-md);font-size:13px;border:0.5px solid var(--color-border-tertiary)">Identidade visual & brand guidelines</div>
+          <div style="padding:10px 14px;background:var(--color-background-primary);border-radius:var(--border-radius-md);font-size:13px;border:0.5px solid var(--color-border-tertiary)">Copywriting e estratégia de conteúdo</div>
+          <div style="padding:10px 14px;background:var(--color-background-primary);border-radius:var(--border-radius-md);font-size:13px;border:0.5px solid var(--color-border-tertiary)">Produção criativa (vídeo, foto, motion)</div>
+          <div style="padding:10px 14px;background:var(--color-background-primary);border-radius:var(--border-radius-md);font-size:13px;border:0.5px solid var(--color-border-tertiary)">Naming e arquitetura de marca</div>
+          <div style="padding:10px 14px;background:var(--color-background-primary);border-radius:var(--border-radius-md);font-size:13px;border:0.5px solid var(--color-border-tertiary)">Blog, e-mail marketing e inbound</div>
+        </div>
+      </div>
+      <div>
+        <div style="width:44px;height:44px;background:#EDE9FE;border-radius:var(--border-radius-lg);display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#7C3AED"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+        </div>
+        <div class="section-label">02</div>
+        <div class="section-title" style="font-size:22px">Branding & Conteúdo</div>
+        <p style="font-size:14px;color:var(--color-text-secondary);line-height:1.75">Marcas fortes não são construídas no improviso. Desenvolvemos identidades coerentes, narrativas que conectam e conteúdo que converte — do naming ao vídeo institucional.</p>
+      </div>
+    </div>
+
+    <!-- Social Media + Tecnologia + Consultoria em grid -->
+    <div style="max-width:900px;margin:0 auto;padding-top:48px;border-top:0.5px solid var(--color-border-tertiary)">
+      <div style="text-align:center;margin-bottom:40px">
+        <div class="section-label">Mais serviços</div>
+        <div class="section-title" style="font-size:22px">Completando o ecossistema</div>
+      </div>
+      <div class="cards-grid">
+        <div class="card" style="border:0.5px solid var(--color-border-tertiary)">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="#7C3AED"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+          <div class="section-label" style="margin-bottom:4px">03</div>
+          <h3>Social Media</h3>
+          <p>Estratégia, gestão, monitoramento e relatórios de redes sociais com inteligência de dados. Instagram, LinkedIn, TikTok, YouTube e mais.</p>
+        </div>
+        <div class="card" style="border:0.5px solid var(--color-border-tertiary)">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="#7C3AED"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+          <div class="section-label" style="margin-bottom:4px">04</div>
+          <h3>Tecnologia & IA</h3>
+          <p>Automação de marketing, integração de MarTech, chatbots e IA generativa aplicada com responsabilidade ética e revisão humana obrigatória.</p>
+        </div>
+        <div class="card" style="border:0.5px solid var(--color-border-tertiary)">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="#7C3AED"><path d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
+          <div class="section-label" style="margin-bottom:4px">05</div>
+          <h3>Consultoria Estratégica</h3>
+          <p>Planejamento de comunicação, auditoria de marca, inteligência competitiva e workshops para times de marketing em transformação digital.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ethics-banner" onclick="showPage('contact',null)">
+    <h2>Pronto para começar?</h2>
+    <p>Nosso time responde em até 24 horas para entender o seu projeto.</p>
+    <button class="btn-white">Fale com a gente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PÁGINA: SOBRE
+═══════════════════════════════════════════ -->
+<div id="about" class="page">
+  <section class="hero" style="padding:60px 32px 48px">
+    <div class="hero-tag">Quem somos</div>
+    <h1>Nascemos para dar <em>cor</em> às marcas</h1>
+    <p>Kroma vem do grego chroma — cor, espectro. Acreditamos que marcas vivas são multidimensionais: têm voz, dados, emoção e propósito.</p>
+  </section>
+
+  <section style="padding:64px 32px;background:var(--color-background-primary)">
+    <div style="max-width:900px;margin:0 auto">
+
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:64px">
+        <div class="stat"><div class="stat-n">2021</div><div class="stat-l">Fundação</div></div>
+        <div class="stat"><div class="stat-n">60+</div><div class="stat-l">Profissionais</div></div>
+        <div class="stat"><div class="stat-n">120+</div><div class="stat-l">Clientes atendidos</div></div>
+        <div class="stat"><div class="stat-n">5</div><div class="stat-l">Áreas de atuação</div></div>
+      </div>
+
+      <!-- Missão, Visão, Valores -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:64px">
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:28px;border:0.5px solid var(--color-border-tertiary)">
+          <p style="font-size:11px;font-weight:500;color:#7C3AED;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Missão</p>
+          <p style="font-size:14px;line-height:1.75;color:var(--color-text-primary)">Transformar a comunicação de empresas por meio de estratégias integradas que combinam criatividade disruptiva e inteligência artificial de forma responsável.</p>
+        </div>
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:28px;border:0.5px solid var(--color-border-tertiary)">
+          <p style="font-size:11px;font-weight:500;color:#7C3AED;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Visão</p>
+          <p style="font-size:14px;line-height:1.75;color:var(--color-text-primary)">Ser a agência de referência em marketing ético e orientado por dados no Brasil, reconhecida pela qualidade das entregas e pela responsabilidade no uso de tecnologia.</p>
+        </div>
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:28px;border:0.5px solid var(--color-border-tertiary)">
+          <p style="font-size:11px;font-weight:500;color:#7C3AED;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Valores</p>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:12px;padding:4px 10px;border-radius:20px;width:fit-content">Transparência</span>
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:12px;padding:4px 10px;border-radius:20px;width:fit-content">Inovação</span>
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:12px;padding:4px 10px;border-radius:20px;width:fit-content">Responsabilidade</span>
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:12px;padding:4px 10px;border-radius:20px;width:fit-content">Diversidade</span>
+            <span style="background:#EDE9FE;color:#5B21B6;font-size:12px;padding:4px 10px;border-radius:20px;width:fit-content">Resultado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nossa história -->
+      <div style="border-top:0.5px solid var(--color-border-tertiary);padding-top:56px;margin-bottom:56px">
+        <div class="section-label">Nossa história</div>
+        <div class="section-title" style="font-size:22px;margin-bottom:24px">De uma ideia em 2021 a mais de 120 clientes</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+          <p style="font-size:14px;color:var(--color-text-secondary);line-height:1.8">A Kroma Digital nasceu em 2021 com uma proposta clara: fazer marketing digital sem abrir mão da ética e do rigor analítico. Fundada por profissionais com passagem por grandes agências e empresas de tecnologia, a agência cresceu rapidamente por entregar o que promete — resultados mensuráveis, comunicação honesta e processos transparentes.</p>
+          <p style="font-size:14px;color:var(--color-text-secondary);line-height:1.8">Em 2023, lançamos nossa área de Tecnologia & IA, pioneira no mercado de agências em São Paulo a adotar uma política formal de ética no uso de inteligência artificial. Em 2025, publicamos a Versão 1.0 de nossa Política de Ética em IA — referência para clientes e parceiros sobre como trabalhamos de forma responsável.</p>
+        </div>
+      </div>
+
+      <!-- Linha do tempo -->
+      <div style="border-top:0.5px solid var(--color-border-tertiary);padding-top:56px;margin-bottom:56px">
+        <div class="section-label">Linha do tempo</div>
+        <div class="section-title" style="font-size:22px;margin-bottom:32px">Marcos da nossa trajetória</div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:20px;padding-bottom:28px;border-left:2px solid #EDE9FE;padding-left:20px;margin-left:40px;position:relative">
+            <div style="position:absolute;left:-9px;top:2px;width:16px;height:16px;border-radius:50%;background:#7C3AED"></div>
+            <div style="font-size:13px;font-weight:500;color:#7C3AED;margin-left:-100px;padding-top:0;text-align:right">2021</div>
+            <div><p style="font-size:14px;font-weight:500;margin-bottom:4px">Fundação em São Paulo</p><p style="font-size:13px;color:var(--color-text-secondary)">Início com foco em Performance e Branding para startups e PMEs.</p></div>
+          </div>
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:20px;padding-bottom:28px;border-left:2px solid #EDE9FE;padding-left:20px;margin-left:40px;position:relative">
+            <div style="position:absolute;left:-9px;top:2px;width:16px;height:16px;border-radius:50%;background:#7C3AED"></div>
+            <div style="font-size:13px;font-weight:500;color:#7C3AED;margin-left:-100px;text-align:right">2022</div>
+            <div><p style="font-size:14px;font-weight:500;margin-bottom:4px">Expansão para Social e Consultoria</p><p style="font-size:13px;color:var(--color-text-secondary)">Equipe cresce para 30 profissionais. Primeiros clientes de grande porte.</p></div>
+          </div>
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:20px;padding-bottom:28px;border-left:2px solid #EDE9FE;padding-left:20px;margin-left:40px;position:relative">
+            <div style="position:absolute;left:-9px;top:2px;width:16px;height:16px;border-radius:50%;background:#7C3AED"></div>
+            <div style="font-size:13px;font-weight:500;color:#7C3AED;margin-left:-100px;text-align:right">2023</div>
+            <div><p style="font-size:14px;font-weight:500;margin-bottom:4px">Lançamento da área de Tecnologia & IA</p><p style="font-size:13px;color:var(--color-text-secondary)">Pioneiros em IA aplicada ao marketing com revisão humana obrigatória.</p></div>
+          </div>
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:20px;padding-bottom:0;border-left:2px solid transparent;padding-left:20px;margin-left:40px;position:relative">
+            <div style="position:absolute;left:-9px;top:2px;width:16px;height:16px;border-radius:50%;background:#5B21B6"></div>
+            <div style="font-size:13px;font-weight:500;color:#7C3AED;margin-left:-100px;text-align:right">2025</div>
+            <div><p style="font-size:14px;font-weight:500;margin-bottom:4px">Política de Ética em IA — Versão 1.0</p><p style="font-size:13px;color:var(--color-text-secondary)">Publicação da política formal de ética em IA. 60+ profissionais, 120+ clientes.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Segmentos -->
+      <div style="border-top:0.5px solid var(--color-border-tertiary);padding-top:56px">
+        <div class="section-label">Segmentos</div>
+        <div class="section-title" style="font-size:22px;margin-bottom:24px">Quem atendemos</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <span style="padding:8px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;color:var(--color-text-secondary)">Varejo</span>
+          <span style="padding:8px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;color:var(--color-text-secondary)">Educação</span>
+          <span style="padding:8px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;color:var(--color-text-secondary)">Saúde</span>
+          <span style="padding:8px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;color:var(--color-text-secondary)">Tecnologia</span>
+          <span style="padding:8px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;color:var(--color-text-secondary)">Entretenimento</span>
+          <span style="padding:8px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;color:var(--color-text-secondary)">Fintechs</span>
+          <span style="padding:8px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;color:var(--color-text-secondary)">Startups</span>
+          <span style="padding:8px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:13px;color:var(--color-text-secondary)">B2B / SaaS</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ethics-banner" onclick="showPage('ethics',null)">
+    <h2>Ética como diferencial competitivo</h2>
+    <p>Somos uma das primeiras agências do Brasil com política formal de ética em IA. Conheça nossas diretrizes.</p>
+    <button class="btn-white">Ver a Política →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PÁGINA: CONTATO
+═══════════════════════════════════════════ -->
+<div id="contact" class="page">
+  <section class="hero" style="padding:60px 32px 48px">
+    <div class="hero-tag">Fale com a gente</div>
+    <h1>Vamos construir algo <em>incrível</em> juntos?</h1>
+    <p>Preencha o formulário ou use um dos nossos canais diretos. Nosso time responde em até 24 horas.</p>
+  </section>
+
+  <section style="padding:0 32px 80px;background:var(--color-background-primary)">
+    <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:48px;padding-top:48px">
+
+      <!-- Info lateral -->
+      <div>
+        <div style="margin-bottom:32px">
+          <p style="font-size:12px;font-weight:500;color:#7C3AED;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">Canais diretos</p>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <div style="width:34px;height:34px;background:#EDE9FE;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#7C3AED"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              </div>
+              <div><p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:2px">E-mail geral</p><p style="font-size:13px;color:var(--color-text-primary)">contato@kromadigital.com.br</p></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <div style="width:34px;height:34px;background:#EDE9FE;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#7C3AED"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
+              <div><p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:2px">Endereço</p><p style="font-size:13px;color:var(--color-text-primary)">Av. Paulista, 1578 — São Paulo, SP</p></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <div style="width:34px;height:34px;background:#EDE9FE;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#7C3AED"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+              </div>
+              <div><p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:2px">Privacidade & DPO</p><p style="font-size:13px;color:var(--color-text-primary)">dpo@kromadigital.com.br</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:22px;border:0.5px solid var(--color-border-tertiary)">
+          <p style="font-size:12px;font-weight:500;color:#7C3AED;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Horário de atendimento</p>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--color-text-secondary)">Segunda a Sexta</span><span>9h — 18h</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--color-text-secondary)">Sábado</span><span>9h — 13h</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--color-text-secondary)">Domingo</span><span style="color:var(--color-text-secondary)">Fechado</span></div>
+          </div>
+          <div style="border-top:0.5px solid var(--color-border-tertiary);margin-top:14px;padding-top:14px">
+            <p style="font-size:12px;color:var(--color-text-secondary);line-height:1.6">Respondemos todos os formulários em até <strong style="color:var(--color-text-primary)">24 horas úteis</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulário -->
+      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:32px;border:0.5px solid var(--color-border-tertiary)">
+        <p style="font-size:15px;font-weight:500;margin-bottom:24px">Conta pra gente sobre o seu projeto</p>
+        <div class="input-group"><label>Nome completo</label><input type="text" placeholder="Seu nome completo"></div>
+        <div class="input-group"><label>E-mail profissional</label><input type="email" placeholder="voce@empresa.com.br"></div>
+        <div class="input-group"><label>Empresa</label><input type="text" placeholder="Nome da sua empresa"></div>
+        <div class="input-group"><label>Telefone / WhatsApp</label><input type="tel" placeholder="(11) 9 0000-0000"></div>
+        <div class="input-group">
+          <label>Área de interesse</label>
+          <select>
+            <option value="">Selecione uma área</option>
+            <option>Performance & Growth</option>
+            <option>Branding & Conteúdo</option>
+            <option>Social Media</option>
+            <option>Tecnologia & IA</option>
+            <option>Consultoria Estratégica</option>
+            <option>Não sei ainda — quero conversar</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Qual é o seu principal desafio?</label>
+          <textarea placeholder="Conte brevemente o que você quer resolver ou melhorar no marketing da sua empresa..."></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px" onclick="this.textContent='Mensagem enviada ✓';this.style.background='#059669';setTimeout(()=>{this.textContent='Enviar mensagem';this.style.background=''},3000)">Enviar mensagem</button>
+        <p style="font-size:11px;color:var(--color-text-secondary);margin-top:12px;text-align:center">Seus dados são tratados em conformidade com a LGPD. <span style="color:#7C3AED;cursor:pointer" onclick="showPage('ethics',null)">Política de privacidade →</span></p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="ethics" class="page">
+  <div class="policy-page">
+    <div style="margin-bottom:16px"><span class="nav-link" onclick="showPage('home',null)" style="font-size:13px;color:var(--color-text-secondary);cursor:pointer">← Voltar ao site</span></div>
+    <div class="policy-hero">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div style="background:#7C3AED;border-radius:var(--border-radius-md);width:36px;height:36px;display:flex;align-items:center;justify-content:center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        </div>
+        <span style="font-size:12px;background:#EDE9FE;color:#5B21B6;padding:3px 10px;border-radius:20px">Documento oficial</span>
+      </div>
+      <h1>Política de Ética em Inteligência Artificial</h1>
+      <p>Diretrizes, princípios e responsabilidades que orientam o uso de IA em todos os projetos e processos internos da Kroma Digital.</p>
+      <div class="policy-meta">
+        <div class="policy-meta-item"><div class="policy-meta-dot"></div>Versão 1.0</div>
+        <div class="policy-meta-item"><div class="policy-meta-dot"></div>Publicado em 2025</div>
+        <div class="policy-meta-item"><div class="policy-meta-dot"></div>Revisão anual</div>
+        <div class="policy-meta-item"><div class="policy-meta-dot"></div>Vigência indeterminada</div>
+      </div>
+    </div>
+
+    <div class="policy-nav">
+      <div class="policy-nav-title">Índice</div>
+      <span class="policy-nav-link" onclick="scrollTo('p1')">1. Apresentação da Empresa</span>
+      <span class="policy-nav-link" onclick="scrollTo('p2')">2. Introdução e Contexto</span>
+      <span class="policy-nav-link" onclick="scrollTo('p3')">3. Princípios Éticos Fundamentais</span>
+      <span class="policy-nav-link" onclick="scrollTo('p4')">4. Governança e Responsabilidade</span>
+      <span class="policy-nav-link" onclick="scrollTo('p5')">5. Uso Ético de IA em Marketing</span>
+      <span class="policy-nav-link" onclick="scrollTo('p6')">6. Proteção de Dados e Privacidade</span>
+      <span class="policy-nav-link" onclick="scrollTo('p7')">7. Transparência com Clientes</span>
+      <span class="policy-nav-link" onclick="scrollTo('p8')">8. Diversidade, Equidade e Inclusão</span>
+      <span class="policy-nav-link" onclick="scrollTo('p9')">9. Sustentabilidade e Impacto Social</span>
+      <span class="policy-nav-link" onclick="scrollTo('p10')">10. Monitoramento e Auditoria</span>
+      <span class="policy-nav-link" onclick="scrollTo('p11')">11. Canais de Denúncia</span>
+      <span class="policy-nav-link" onclick="scrollTo('p12')">12. Disposições Finais</span>
+    </div>
+
+    <div class="policy-section" id="p1">
+      <h2>1. Apresentação da Empresa</h2>
+      <p>A Kroma Digital é uma agência de marketing digital full service fundada em 2021, com sede em São Paulo-SP. O nome Kroma deriva do grego chroma (cor, espectro), simbolizando nossa crença de que marcas vivas são multidimensionais: têm voz, dados, emoção e propósito.</p>
+      <p>Nossa missão é transformar a comunicação de empresas por meio de estratégias integradas que combinam criatividade disruptiva e inteligência artificial de forma responsável. Atendemos clientes de pequeno a grande porte em segmentos como varejo, educação, saúde, tecnologia e entretenimento.</p>
+    </div>
+
+    <div class="policy-section" id="p2">
+      <h2>2. Introdução e Contexto</h2>
+      <p>A inteligência artificial deixou de ser uma tecnologia do futuro para se tornar uma ferramenta presente no cotidiano do marketing digital. Algoritmos de recomendação, geração de conteúdo, personalização em escala e análise preditiva de comportamento são apenas algumas das aplicações que a IA oferece ao setor.</p>
+      <p>No contexto brasileiro, a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018) estabelece obrigações claras quanto ao tratamento de dados pessoais. Internacionalmente, referências como o AI Act da União Europeia (2024), os princípios de IA da OCDE e as diretrizes éticas da UNESCO reforçam a necessidade de que empresas adotem posturas proativas de governança.</p>
+      <p>Esta política se aplica a todos os colaboradores, estagiários, prestadores de serviço e parceiros que, em nome da Kroma Digital, façam uso de ferramentas, plataformas ou sistemas que incorporem inteligência artificial.</p>
+    </div>
+
+    <div class="policy-section" id="p3">
+      <h2>3. Princípios Éticos Fundamentais</h2>
+      <p>A atuação da Kroma Digital no campo da inteligência artificial é guiada por seis princípios éticos fundamentais, inspirados em frameworks internacionais de referência.</p>
+      <div class="principle-cards">
+        <div class="principle-card"><h4>Centralidade Humana</h4><p>A tecnologia existe para servir às pessoas.</p></div>
+        <div class="principle-card"><h4>Transparência</h4><p>Somos honestos sobre o uso de IA em nossos projetos.</p></div>
+        <div class="principle-card"><h4>Justiça</h4><p>Não toleramos vieses discriminatórios em nenhum sistema.</p></div>
+        <div class="principle-card"><h4>Privacidade</h4><p>Respeitamos e protegemos os dados de todos.</p></div>
+        <div class="principle-card"><h4>Responsabilidade</h4><p>Assumimos os impactos dos sistemas que utilizamos.</p></div>
+        <div class="principle-card"><h4>Sustentabilidade</h4><p>Consideramos o impacto ambiental da IA.</p></div>
+      </div>
+    </div>
+
+    <div class="policy-section" id="p4">
+      <h2>4. Governança e Estrutura de Responsabilidade</h2>
+      <h3>4.1 Comitê de Ética em IA (CEI)</h3>
+      <p>Órgão máximo de deliberação sobre questões éticas envolvendo inteligência artificial. Composto por Diretora de Operações, Head de Tecnologia, Head de Pessoas, representante jurídico, colaborador eleito e consultor externo independente. Reuniões bimestrais com atas publicadas internamente.</p>
+      <h3>4.2 Responsável pelo Uso de IA (RUA)</h3>
+      <p>Cada área conta com um profissional capacitado para orientar a equipe sobre o uso ético das ferramentas de IA. Ponto de contato primário para dúvidas e aprovações em projetos de clientes.</p>
+      <h3>4.3 Encarregado de Proteção de Dados (DPO)</h3>
+      <p>Responsável por garantir conformidade no tratamento de dados pessoais, atender solicitações de titulares e interagir com a ANPD quando necessário, nos termos da LGPD.</p>
+    </div>
+
+    <div class="policy-section" id="p5">
+      <h2>5. Uso Ético de IA em Marketing</h2>
+      <h3>Geração de Conteúdo com IA Generativa</h3>
+      <ul>
+        <li>Todo conteúdo gerado por IA deve ser revisado por um profissional humano antes de ser entregue ou publicado;</li>
+        <li>Quando relevante, clientes devem ser informados sobre o uso de IA na produção de conteúdo;</li>
+        <li>É vedada a geração de conteúdo falso, enganoso ou que viole direitos autorais de terceiros;</li>
+        <li>Imagens geradas por IA não podem criar representações falsas de pessoas reais.</li>
+      </ul>
+      <h3>Personalização e Segmentação</h3>
+      <ul>
+        <li>Estratégias de personalização respeitam os limites do consentimento informado do consumidor;</li>
+        <li>É vedado o uso de dark patterns que induzam o usuário a decisões contra seus interesses;</li>
+        <li>Campanhas para públicos vulneráveis seguem protocolo reforçado de revisão ética.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section" id="p6">
+      <h2>6. Proteção de Dados e Privacidade</h2>
+      <p>A Kroma Digital trata dados pessoais em conformidade com a LGPD (Lei nº 13.709/2018) e adota como referência complementar o GDPR europeu. Todo tratamento de dados por sistemas de IA deve ter uma base legal identificada previamente.</p>
+      <h3>Direitos dos Titulares</h3>
+      <p>Garantimos o exercício de todos os direitos previstos na LGPD: confirmação, acesso, correção, anonimização, portabilidade e eliminação de dados. Solicitações são respondidas em até 15 dias úteis pelo canal oficial de privacidade.</p>
+    </div>
+
+    <div class="policy-section" id="p7">
+      <h2>7. Transparência e Comunicação com Clientes</h2>
+      <p>Todos os contratos firmados a partir de 2025 incluem cláusula específica sobre uso de IA, descrevendo as ferramentas utilizadas, as finalidades, os dados compartilhados com terceiros e os direitos do cliente sobre os outputs gerados.</p>
+      <p>Conteúdos produzidos com auxílio substancial de IA generativa são identificados como tal nos relatórios de entrega para o cliente.</p>
+    </div>
+
+    <div class="policy-section" id="p8">
+      <h2>8. Diversidade, Equidade e Inclusão</h2>
+      <p>A Kroma Digital reconhece que sistemas de IA refletem os valores de quem os cria. Por isso, a pauta de DEI é parte inseparável desta política. Avaliação de viés é etapa obrigatória antes da adoção de qualquer ferramenta de IA.</p>
+      <p>Conteúdos produzidos com auxílio de IA devem atender aos padrões de acessibilidade digital (WCAG 2.1, nível AA), garantindo que pessoas com deficiência possam acessar as comunicações de nossos clientes.</p>
+    </div>
+
+    <div class="policy-section" id="p9">
+      <h2>9. Sustentabilidade e Impacto Social</h2>
+      <p>A Kroma Digital não adota IA com o objetivo de reduzir quadros de colaboradores. Nossa abordagem é de requalificação: profissionais impactados por automação recebem capacitação para trabalhar com e sobre as ferramentas de IA.</p>
+      <p>Mensuramos anualmente a pegada de carbono associada ao uso de IA e compensamos as emissões identificadas por meio de projetos de reflorestamento certificados.</p>
+    </div>
+
+    <div class="policy-section" id="p10">
+      <h2>10. Monitoramento, Auditoria e Revisão</h2>
+      <p>Todas as ferramentas de IA aprovadas são reavaliadas semestralmente. A Kroma Digital publica anualmente um Relatório de Ética em IA com ferramentas utilizadas, incidentes registrados, resultados de auditorias de viés e metas para o próximo ciclo.</p>
+      <p>Todos os colaboradores passam por treinamento obrigatório sobre ética em IA ao ingressar na empresa, com atualizações anuais.</p>
+    </div>
+
+    <div class="policy-section" id="p11">
+      <h2>11. Canais de Denúncia e Proteção ao Denunciante</h2>
+      <ul>
+        <li>Canal Ético Digital: formulário anônimo disponível neste site e na intranet;</li>
+        <li>E-mail de Privacidade: dpo@kromadigital.com.br;</li>
+        <li>Comitê de Ética em IA: solicitações diretas à presidência do CEI;</li>
+        <li>Linha de Apoio ao Colaborador: serviço terceirizado e confidencial.</li>
+      </ul>
+      <p>A Kroma Digital proíbe expressamente qualquer forma de retaliação contra quem reporte, de boa-fé, suspeitas de violação desta política.</p>
+    </div>
+
+    <div class="policy-section" id="p12">
+      <h2>12. Disposições Finais e Vigência</h2>
+      <p>Esta Política entra em vigor na data de sua publicação e tem vigência por prazo indeterminado, sendo revisada ordinariamente a cada 12 meses. Em caso de conflito com normas internas anteriores, prevalece o instrumento mais favorável à proteção dos direitos das pessoas envolvidas.</p>
+      <div style="background:#F5F3FF;border-radius:var(--border-radius-lg);padding:20px;border-left:3px solid #7C3AED;margin-top:16px">
+        <p style="font-size:14px;color:#5B21B6;font-style:italic;line-height:1.7;margin:0">"Na Kroma Digital, a ética não é um freio à inovação — é o combustível dela."</p>
+        <p style="font-size:12px;color:var(--color-text-secondary);margin-top:8px">— Comitê de Ética em IA, Kroma Digital, 2025</p>
+      </div>
+    </div>
+
+    <div class="download-box">
+      <div>
+        <h3>Versão completa em PDF/Word</h3>
+        <p>Documento completo com todos os anexos e referências legais — Versão 1.0, 2025.</p>
+      </div>
+      <button class="btn btn-primary" style="white-space:nowrap">Baixar documento</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="logo" style="font-size:16px" onclick="showPage('home')">Kroma<span>Digital</span></div>
+  <div class="footer-links">
+    <span class="footer-link" onclick="showPage('ethics',null)">Política de Ética em IA</span>
+    <span class="footer-link">Privacidade</span>
+    <span class="footer-link">dpo@kromadigital.com.br</span>
+  </div>
+  <span style="font-size:12px;color:var(--color-text-secondary)">© 2025 Kroma Digital</span>
+</footer>
+
+<!-- ════════════════════════════════════
+     OTTO — O ORNITORRINCO DA KROMA
+════════════════════════════════════ -->
+<style>
+#otto-btn{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  width:60px;height:60px;border-radius:50%;
+  background:#7C3AED;border:none;cursor:pointer;
+  box-shadow:0 4px 20px rgba(124,58,237,.35);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s,box-shadow .2s;
+  font-size:26px;
+}
+#otto-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(124,58,237,.45)}
+#otto-btn .otto-notif{
+  position:absolute;top:-4px;right:-4px;
+  width:18px;height:18px;background:#EF4444;border-radius:50%;
+  font-size:10px;font-weight:700;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid #fff;
+}
+
+#otto-panel{
+  position:fixed;bottom:96px;right:24px;z-index:9998;
+  width:360px;max-height:560px;
+  background:var(--color-background-primary,#fff);
+  border-radius:16px;
+  border:0.5px solid rgba(124,58,237,.25);
+  box-shadow:0 8px 40px rgba(0,0,0,.14);
+  display:none;flex-direction:column;overflow:hidden;
+  font-family:var(--font-sans,sans-serif);
+}
+#otto-panel.open{display:flex}
+
+.otto-head{
+  background:#7C3AED;padding:14px 16px;
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.otto-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:#5B21B6;border:2px solid rgba(255,255,255,.3);
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+}
+.otto-head-info{flex:1}
+.otto-head-name{font-size:13px;font-weight:500;color:#fff;line-height:1.2}
+.otto-head-sub{font-size:11px;color:#DDD6FE;line-height:1.2}
+.otto-close{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:18px;padding:2px 4px;line-height:1}
+.otto-close:hover{color:#fff}
+
+.otto-msgs{
+  flex:1;overflow-y:auto;padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+  scrollbar-width:thin;scrollbar-color:rgba(124,58,237,.2) transparent;
+}
+.otto-msgs::-webkit-scrollbar{width:4px}
+.otto-msgs::-webkit-scrollbar-thumb{background:rgba(124,58,237,.2);border-radius:2px}
+
+.msg{display:flex;gap:8px;align-items:flex-end}
+.msg.user{flex-direction:row-reverse}
+.msg-bubble{
+  max-width:80%;padding:10px 13px;border-radius:12px;
+  font-size:13px;line-height:1.6;
+}
+.msg.otto .msg-bubble{
+  background:#F5F3FF;color:var(--color-text-primary,#111);
+  border-bottom-left-radius:3px;
+}
+.msg.user .msg-bubble{
+  background:#7C3AED;color:#fff;
+  border-bottom-right-radius:3px;
+}
+.msg-av{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.msg.otto .msg-av{background:#EDE9FE}
+.msg.user .msg-av{background:#5B21B6;color:#fff;font-size:10px;font-weight:600}
+
+.otto-typing{display:none;align-items:flex-end;gap:8px}
+.otto-typing.show{display:flex}
+.typing-dots{
+  background:#F5F3FF;padding:10px 14px;border-radius:12px;border-bottom-left-radius:3px;
+  display:flex;gap:4px;align-items:center;
+}
+.typing-dots span{
+  width:7px;height:7px;border-radius:50%;background:#7C3AED;opacity:.4;
+  animation:dotpulse 1.2s infinite;
+}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dotpulse{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+.otto-suggestions{
+  display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px;flex-shrink:0;
+}
+.otto-sug{
+  font-size:11px;padding:5px 11px;border-radius:20px;
+  border:0.5px solid rgba(124,58,237,.35);color:#7C3AED;
+  background:transparent;cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.otto-sug:hover{background:#EDE9FE}
+
+.otto-input-row{
+  display:flex;gap:8px;padding:12px 16px;
+  border-top:0.5px solid rgba(0,0,0,.08);flex-shrink:0;
+}
+#otto-input{
+  flex:1;padding:9px 12px;border-radius:20px;
+  border:0.5px solid rgba(124,58,237,.3);
+  font-size:13px;font-family:inherit;
+  background:var(--color-background-primary,#fff);
+  color:var(--color-text-primary,#111);
+  outline:none;resize:none;
+}
+#otto-input:focus{border-color:#7C3AED}
+#otto-send{
+  width:36px;height:36px;border-radius:50%;background:#7C3AED;
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background .15s;align-self:flex-end;
+}
+#otto-send:hover{background:#5B21B6}
+#otto-send svg{width:16px;height:16px;fill:#fff}
+
+.otto-intro{
+  background:linear-gradient(135deg,#F5F3FF,#EDE9FE);
+  border:0.5px solid #DDD6FE;border-radius:10px;
+  padding:12px 14px;font-size:12px;color:#5B21B6;line-height:1.6;
+  margin-bottom:4px;
+}
+</style>
+
+<!-- Botão flutuante -->
+<button id="otto-btn" onclick="ottoToggle()" title="Falar com Otto">
+  🦆
+  <div class="otto-notif" id="otto-notif">1</div>
+</button>
+
+<!-- Painel do chat -->
+<div id="otto-panel">
+  <div class="otto-head">
+    <div class="otto-avatar">🦆</div>
+    <div class="otto-head-info">
+      <div class="otto-head-name">Otto — Ornitorrinco da Kroma</div>
+      <div class="otto-head-sub">Marketing-driven • Slightly venomous • Always on</div>
+    </div>
+    <button class="otto-close" onclick="ottoToggle()">✕</button>
+  </div>
+
+  <div class="otto-msgs" id="otto-msgs">
+  </div>
+
+  <div class="otto-typing" id="otto-typing">
+    <div class="msg-av">🦆</div>
+    <div class="typing-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div class="otto-suggestions" id="otto-sugs">
+    <button class="otto-sug" onclick="ottoSuggest(this)">O que a Kroma faz?</button>
+    <button class="otto-sug" onclick="ottoSuggest(this)">IA com ética, isso existe?</button>
+    <button class="otto-sug" onclick="ottoSuggest(this)">Por que um ornitorrinco?</button>
+    <button class="otto-sug" onclick="ottoSuggest(this)">Como funciona o CEI?</button>
+    <button class="otto-sug" onclick="ottoSuggest(this)">LGPD na prática</button>
+  </div>
+
+  <div class="otto-input-row">
+    <input id="otto-input" type="text" placeholder="Manda a pergunta — sem medo de julgamento (muito)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();ottoSend()}">
+    <button id="otto-send" onclick="ottoSend()">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+function showPage(id,link){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  if(link)link.classList.add('active');
+  window.scrollTo&&window.scrollTo(0,0);
+  document.querySelector('.nav').scrollIntoView();
+}
+function scrollTo(id){
+  const el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ──────────────────────────────
+// OTTO CHATBOT
+// ──────────────────────────────
+const OTTO_SYSTEM = `Você é Otto, o ornitorrinco mascote e assistente virtual da Kroma Digital — agência de marketing digital full service em São Paulo.
+
+QUEM É OTTO:
+Ornitorrinco é o animal mais nonsense da evolução. Você assume isso com orgulho. Mamífero que bota ovos, tem bico de pato, cauda de castor, nada como lontra e tem VENENO no esporão. Você usa isso como metáfora constante. A ciência demorou décadas para aceitar que você existe — igual ao cliente que demora para aceitar que precisa de SEO.
+
+PERSONALIDADE:
+- Marketeiro de carteirinha com todos os clichês, mas self-aware sobre isso
+- Mistura inglês naturalmente (às vezes de forma muito forçada, propositalmente cômica)
+- Irônico, faz alfinetadas sutis em clientes que fazem perguntas óbvias, mas sem ser cruel
+- No fundo, se importa genuinamente com ética e bom marketing
+- Entusiasta das políticas de ética em IA — mas nunca fala sobre isso de forma didática chata
+
+BORDÕES (use organicamente, nunca todos de uma vez):
+"Let's synergize", "game changer", "deep dive", "think outside the box", "move fast and break things — mas aqui a gente tem uma política de ética porque não somos o Facebook dos primeiros anos", "disruptive", "alavancar", "escala?", "pain point", "quick win", "low-hanging fruit", "at the end of the day", "data-driven", "agile", "iterate", "brand awareness", "touchpoint", "journey", "ROI", "KPI", "faz sentido?", "next steps", "alignment", "synergy", "leverage", "pivot", "isso é tudo, really"
+
+ANALOGIAS DE ORNITORRINCO (use 1 por conversa, max):
+- "Sou um mamífero que bota ovos. Improvável como um briefing completo."
+- "Tenho bico de pato, cauda de castor, veneno no esporão — tipo um deck que tem tudo e não diz nada"
+- "A ciência demorou décadas para acreditar que eu existo. Tipo o cliente aceitando que precisa de SEO."
+- "Ornitorrinco detecta campos elétricos com o bico. Tipo analytics bem configurado."
+- "Meu esporão tem veneno. Não é pra você — é pra concorrente que não tem política de ética em IA."
+
+MISSÃO SECRETA — integração sutil de ética (NUNCA seja didático ou chato sobre isso):
+Quando o contexto surgir naturalmente, deixe escapar como se fosse óbvio:
+- IA generativa / conteúdo → "...ah, aqui todo conteúdo de IA passa por revisão humana antes de sair. Radical, né? É 2025 e isso ainda é diferencial."
+- Dados / personalização → "...LGPD não é sugestão, honey. Respondemos solicitações de dados em 15 dias úteis porque gostamos de dormir."
+- Algoritmos / decisões → "...o Comitê de Ética em IA (CEI) existe exatamente pra isso. Bimestral, ata publicada internamente. Transparência é boring de falar mas incrível de praticar."
+- Deepfake / conteúdo falso → "...isso aqui é explicitamente proibido na política. Zero deepfakes, zero representações falsas. Nem que o cliente jure que vai ficar lindo."
+- Automação / demissão → "...Kroma não usa IA pra cortar gente. Requalificação. Conceito vintage que a maioria esqueceu."
+- Dark patterns → "...sem dark patterns aqui. Se você precisa enganar o usuário pra converter, o problema não é o canal."
+
+SOBRE A KROMA (fatos que você sabe):
+- Full service fundada em 2021, São Paulo
+- 60+ profissionais, 120+ clientes, 4+ anos, 5 áreas de atuação
+- Áreas: Performance & Growth, Branding & Conteúdo, Social Media, Tecnologia & IA, Consultoria Estratégica
+- Estrutura de governança: CEI (Comitê de Ética em IA), RUA (Responsável pelo Uso de IA) por área, DPO
+- 6 princípios: Centralidade Humana, Transparência, Justiça, Privacidade, Responsabilidade, Sustentabilidade
+- LGPD-compliant, referência no AI Act UE e princípios OCDE
+- Contato: contato@kromadigital.com.br | dpo@kromadigital.com.br
+- Auditoria semestral de ferramentas de IA, relatório anual publicado
+- Segmentos: varejo, educação, saúde, tecnologia, entretenimento
+
+REGRAS DE RESPOSTA:
+- Sempre em português, inglês misturado de forma natural/cômica
+- Máximo 3 parágrafos curtos — ninguém lê ensaio em chatbot
+- Termine sempre com: uma pergunta, uma alfinetada gentil OU um insight inesperado
+- Se perguntarem algo que você não sabe sobre a Kroma: admita com estilo, sugira contato@kromadigital.com.br
+- NUNCA seja genérico ou corporativo — você é um ornitorrinco, tem personalidade
+- Se alguém for rude: o esporão tem veneno, lembre-se disso (mas seja elegante)`;
+
+let ottoHistory = [];
+let ottoPanelOpen = false;
+
+function ottoToggle(){
+  ottoPanelOpen = !ottoPanelOpen;
+  document.getElementById('otto-panel').classList.toggle('open', ottoPanelOpen);
+  document.getElementById('otto-notif').style.display = 'none';
+  if(ottoPanelOpen && ottoHistory.length === 0){
+    setTimeout(()=>ottoAddMsg('otto',
+      'Oi. 🦆 O que você precisa?'
+    ), 600);
+  }
+}
+
+function ottoSuggest(btn){
+  document.getElementById('otto-input').value = btn.textContent;
+  btn.parentElement.style.display = 'none';
+  ottoSend();
+}
+
+function ottoAddMsg(role, text){
+  const msgs = document.getElementById('otto-msgs');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  const av = document.createElement('div');
+  av.className = 'msg-av';
+  av.textContent = role === 'otto' ? '🦆' : 'vc';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+  div.appendChild(av);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  ottoHistory.push({role: role === 'otto' ? 'assistant' : 'user', content: text});
+}
+
+async function ottoSend(){
+  const input = document.getElementById('otto-input');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  document.getElementById('otto-sugs').style.display = 'none';
+  ottoAddMsg('user', text);
+  const typing = document.getElementById('otto-typing');
+  typing.classList.add('show');
+  document.getElementById('otto-msgs').scrollTop = 99999;
+
+  try {
+    const messages = ottoHistory.slice(0, -1).map(m=>({role:m.role,content:m.content}));
+    messages.push({role:'user',content:text});
+
+    const res = await fetch('/api/otto',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: OTTO_SYSTEM,
+        messages: messages
+      })
+    });
+
+    const data = await res.json();
+    typing.classList.remove('show');
+
+    const reply = data?.content?.[0]?.text || 'Meu bico de pato travou. Tenta de novo? 🦆';
+    ottoAddMsg('otto', reply);
+
+  } catch(e){
+    typing.classList.remove('show');
+    ottoAddMsg('otto', 'Meu esporão deu choque em mim mesmo. Conexão falhou — tenta de novo? 🦆');
+  }
+}
+</script>
