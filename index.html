@@ -1,3 +1,6 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta charset="utf-8">
+<title>Kroma Digital — Marketing que transforma marcas em movimento</title>
 <script>document.documentElement.lang='pt-BR'</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Inter:wght@400;500&display=swap');
@@ -806,6 +809,22 @@ var currentAudio = null;
 var ottoIntroDone = false;
 var conversationActive = false;
 var ottoAnswerTimer = null;
+var audioUnlocked = false;
+
+function unlockAudio(){
+  if(audioUnlocked) return;
+  audioUnlocked = true;
+  try {
+    var silent = new Audio('data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgP////////////////////////////////////////////8AAAAATGF2YzU3LjEwAAAAAAAAAAAAAAAAJAAAAAAAAAAAAnGMHkkIAAAAAAAAAAAAAAAAAAAA//sQxAADwAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxCmDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxFGDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxHmDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxKGDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxMmDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxPGDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
+    silent.volume = 0.01;
+    silent.play().catch(function(){});
+  } catch(e){}
+  try {
+    var u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
+    speechSynthesis.speak(u);
+  } catch(e){}
+}
 
 function ottoIntro(){
   if(ottoIntroDone) return;
@@ -875,12 +894,14 @@ function ottoShowAnswer(text){
 }
 
 function ottoPickS(btn){
+  unlockAudio();
   document.getElementById('otto-msg-input').value = btn.textContent;
   document.getElementById('otto-starters').style.display = 'none';
   ottoPageSend();
 }
 
 function ottoPageSend(){
+  unlockAudio();
   var input = document.getElementById('otto-msg-input');
   var text = input.value.trim();
   if(!text) return;
@@ -970,6 +991,7 @@ function ottoStopEL(){
 }
 
 function ottoToggleMic(){
+  unlockAudio();
   if(ottoMicActive){ ottoStopListen(); return; }
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR){ alert('Use Chrome ou Edge para falar com o Otto.'); return; }
