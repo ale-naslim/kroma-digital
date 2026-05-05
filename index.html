@@ -346,6 +346,7 @@ footer{
 .otto-content{
   flex:1;display:flex;flex-direction:column;
   padding:24px 24px 0;overflow:hidden;
+  min-height:0; /* fix iOS flex scroll */
 }
 @media(min-width:760px){.otto-content{padding:28px 28px 0}}
 
@@ -386,7 +387,15 @@ footer{
 @keyframes oblk{0%,100%{opacity:1}50%{opacity:0}}
 .otto-divider{width:32px;height:0.5px;background:#C8C3BB;margin:14px 0;flex-shrink:0;opacity:0;transition:opacity .25s}
 .otto-divider.show{opacity:1}
-.otto-answer{font-size:15px;color:#444;line-height:1.65;max-width:560px;opacity:0;transition:opacity .25s;overflow-y:auto;flex:1;padding-bottom:10px}
+.otto-answer{
+  font-size:15px;color:#444;line-height:1.65;max-width:560px;
+  opacity:0;transition:opacity .25s;
+  flex:1 1 auto;
+  min-height:0; /* fix iOS flex scroll */
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch; /* scroll suave no iOS */
+  padding-bottom:24px;
+}
 .otto-answer.show{opacity:1}
 @media(min-width:760px){
   .otto-divider{width:40px;margin:18px 0}
@@ -901,15 +910,33 @@ var audioUnlocked = false;
 function unlockAudio(){
   if(audioUnlocked) return;
   audioUnlocked = true;
+  // 1. Desbloqueia <audio> HTML5 com MP3 silencioso
   try {
     var silent = new Audio('data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgP////////////////////////////////////////////8AAAAATGF2YzU3LjEwAAAAAAAAAAAAAAAAJAAAAAAAAAAAAnGMHkkIAAAAAAAAAAAAAAAAAAAA//sQxAADwAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxCmDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxFGDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxHmDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxKGDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxMmDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxPGDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
     silent.volume = 0.01;
-    silent.play().catch(function(){});
+    var p = silent.play();
+    if(p && p.catch) p.catch(function(){});
   } catch(e){}
+  // 2. Desbloqueia SpeechSynthesis (não usado em iOS, mas garante)
   try {
     var u = new SpeechSynthesisUtterance(' ');
     u.volume = 0;
     speechSynthesis.speak(u);
+  } catch(e){}
+  // 3. Desbloqueia AudioContext se já criado (iOS o cria como suspended)
+  try {
+    if(window.AudioContext || window.webkitAudioContext){
+      if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === 'suspended'){
+        audioCtx.resume();
+      }
+      // Toca um buffer silencioso pelo AudioContext pra garantir desbloqueio
+      var buf = audioCtx.createBuffer(1, 1, 22050);
+      var src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(audioCtx.destination);
+      if(src.start) src.start(0); else src.noteOn(0);
+    }
   } catch(e){}
 }
 
@@ -1132,6 +1159,33 @@ function setupLipsync(audioEl){
   // Cleanup anterior
   if(lipsyncRAF){ cancelAnimationFrame(lipsyncRAF); lipsyncRAF = null; }
 
+  // iOS: NÃO usar Web Audio API porque createMediaElementSource interfere
+  // com o playback no Safari iOS. Em vez disso, usa lipsync simulado.
+  if(isIOS()){
+    showAvatar();
+    var t0 = performance.now();
+    function tickIOS(){
+      // Só anima enquanto o audio está tocando
+      if(audioEl.paused || audioEl.ended){
+        setBeak(0);
+        return;
+      }
+      var t = (performance.now() - t0) / 1000;
+      var amount = 0.3 + 0.35 * Math.abs(Math.sin(t * 7) + Math.sin(t * 11.3) * 0.5);
+      setBeak(Math.min(1, amount));
+      lipsyncRAF = requestAnimationFrame(tickIOS);
+    }
+    audioEl.addEventListener('play', function onPlay(){
+      audioEl.removeEventListener('play', onPlay);
+      tickIOS();
+    });
+    audioEl.addEventListener('ended', function onEnd(){
+      audioEl.removeEventListener('ended', onEnd);
+      stopLipsync();
+    });
+    return;
+  }
+
   try {
     if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if(audioCtx.state === 'suspended') audioCtx.resume();
@@ -1244,6 +1298,9 @@ function ottoSpeak(text, onStart){
     if(!blob) return;
     var url = URL.createObjectURL(blob);
     currentAudio = new Audio(url);
+    currentAudio.preload = 'auto';
+    currentAudio.setAttribute('playsinline', 'true');
+    currentAudio.setAttribute('webkit-playsinline', 'true');
     currentAudio.onplay = function(){
       wavebar.classList.add('show');
       // Passa a duração real do áudio (em ms) pra sincronizar o ritmo do texto
