@@ -349,7 +349,9 @@ footer{
 }
 @media(min-width:760px){.otto-content{padding:28px 28px 0}}
 
-.otto-q-label{font-size:11px;letter-spacing:.14em;color:#AAA5A0;text-transform:uppercase;margin-bottom:14px}
+.otto-q-label{font-size:11px;letter-spacing:.14em;color:#AAA5A0;text-transform:uppercase;margin-bottom:14px;transition:color .25s ease}
+.otto-q-label.loading{color:#7C3AED;animation:loading-pulse 1.4s ease-in-out infinite}
+@keyframes loading-pulse{0%,100%{opacity:.55}50%{opacity:1}}
 .otto-big{
   font-family:'Syne',sans-serif;
   font-size:clamp(40px,12vw,64px);line-height:.95;
@@ -448,22 +450,20 @@ footer{
 
 
 
-/* ─── OTTO BIG AVATAR (acima do texto da fala) ─── */
+/* ─── OTTO BIG AVATAR (sempre visível, anima só quando fala) ─── */
 .otto-big-avatar{
   position:relative !important;
-  display:none;
+  display:block;
   margin:0 auto 12px;
   width:140px;
   height:140px;
   pointer-events:none;
-  opacity:0;
-  transform:translateY(15px) scale(.7);
-  transition:opacity .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1);
-}
-.otto-big-avatar.show{
-  display:block;
   opacity:1;
   transform:translateY(0) scale(1);
+  transition:transform .25s ease;
+}
+.otto-big-avatar.talking{
+  transform:translateY(0) scale(1.05);
 }
 .otto-big-avatar img{
   position:absolute !important;
@@ -479,6 +479,14 @@ footer{
 .otto-big-avatar .otto-big-open{display:none !important}
 .otto-big-avatar.talking .otto-big-closed{display:none !important}
 .otto-big-avatar.talking .otto-big-open{display:block !important}
+/* Idle bob — animação suave de respiração quando NÃO está falando */
+.otto-big-avatar:not(.talking){
+  animation:idle-bob 3.2s ease-in-out infinite;
+}
+@keyframes idle-bob{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-3px) scale(1)}
+}
 @media(min-width:760px){
   .otto-big-avatar{width:200px;height:200px;margin-bottom:16px}
 }
@@ -873,6 +881,57 @@ function unlockAudio(){
   } catch(e){}
 }
 
+// ── LOADING MESSAGES (frases cômicas enquanto o áudio gera) ──
+var LOADING_MESSAGES = [
+  'calculando CAC pelo bico',
+  'fazendo deep dive na lagoa',
+  'rodando A/B test no esporão',
+  'sincronizando com o Comitê de Ética',
+  'pivotando estratégia (de novo)',
+  'mapeando journey do ornitorrinco',
+  'alinhando com o jacaré da concorrência',
+  'rodando query no SQL aquático',
+  'otimizando funil pelo bico',
+  'puxando insight do reservatório',
+  'consultando o oráculo de Sydney',
+  'fazendo benchmark com o castor',
+  'limpando dataset com xampu de pato',
+  'gerando deck no PowerPlatypus',
+  'criando OKRs ovíparos',
+  'aprovando criativo com o DPO',
+  'dando refresh no LGPD',
+  'requalificando neurônios',
+  'auditando viés do bico',
+  'compensando carbono via reflorestamento'
+];
+var loadingTimer = null;
+var loadingIndex = 0;
+
+function startLoadingMessages(){
+  stopLoadingMessages();
+  // embaralha pra não repetir sempre na mesma ordem
+  loadingIndex = Math.floor(Math.random() * LOADING_MESSAGES.length);
+  var label = document.getElementById('otto-q-label');
+  if(label){
+    label.textContent = LOADING_MESSAGES[loadingIndex] + '…';
+    label.classList.add('loading');
+  }
+  loadingTimer = setInterval(function(){
+    loadingIndex = (loadingIndex + 1) % LOADING_MESSAGES.length;
+    var lbl = document.getElementById('otto-q-label');
+    if(lbl) lbl.textContent = LOADING_MESSAGES[loadingIndex] + '…';
+  }, 2200);
+}
+
+function stopLoadingMessages(){
+  if(loadingTimer){ clearInterval(loadingTimer); loadingTimer = null; }
+  var label = document.getElementById('otto-q-label');
+  if(label){
+    label.classList.remove('loading');
+    // será sobrescrito por "você perguntou —" quando ottoShowAnswer roda
+  }
+}
+
 function ottoIntro(){
   if(ottoIntroDone) return;
   ottoIntroDone = true;
@@ -948,6 +1007,12 @@ function ottoAnimateBig(text, cb){
 }
 
 function ottoShowAnswer(text, audioDurationMs){
+  // Reseta o label pro estado normal
+  var label = document.getElementById('otto-q-label');
+  if(label){
+    label.classList.remove('loading');
+    label.textContent = 'você perguntou —';
+  }
   ottoAnimateAnswer(text, audioDurationMs);
 }
 
@@ -971,6 +1036,7 @@ function ottoPageSend(){
   document.getElementById('otto-divider').classList.remove('show');
   ottoStopEL();
   ottoAnimateBig(text);
+  startLoadingMessages();
   ottoHistory.push({role:'user', content:text});
   fetch('/api/otto', {
     method:'POST',
@@ -985,23 +1051,24 @@ function ottoPageSend(){
     .then(function(data){
       var reply = (data && data.content && data.content[0] && data.content[0].text) || 'Meu bico travou. Tenta de novo?';
       ottoHistory.push({role:'assistant', content:reply});
-      // Voz inicia primeiro (gera no ElevenLabs); animação dispara quando áudio começa a tocar
+      // Texto só aparece quando áudio estiver pronto (sincronizado)
       var answerStarted = false;
       ottoSpeak(reply, function(audioDurationMs){
         if(!answerStarted){
           answerStarted = true;
+          stopLoadingMessages();
           ottoShowAnswer(reply, audioDurationMs);
         }
       });
-      // Failsafe: se o áudio falhar/demorar muito, exibe mesmo assim em 4s
+      // Failsafe: se áudio falhar/demorar muito, mostra mesmo assim em 8s
       setTimeout(function(){
         if(!answerStarted){
           answerStarted = true;
-          // Estimativa caso o áudio nunca venha
+          stopLoadingMessages();
           var wordCount = reply.split(' ').length;
           ottoShowAnswer(reply, wordCount * 280);
         }
-      }, 4000);
+      }, 8000);
     })
     .catch(function(){ ottoShowAnswer('Sem conexão — tenta de novo.'); });
 }
@@ -1013,19 +1080,14 @@ var lipsyncRAF = null;
 var lipsyncAnalyser = null;
 
 function showAvatar(){
+  // Otto sempre visível agora — só removemos o estado talking se não estiver
   var av = document.getElementById('otto-big-avatar');
-  if(av){
-    av.classList.add('show');
-    av.classList.remove('idle');
-  }
+  if(av) av.classList.remove('idle'); // não usamos mais idle como class
 }
 function hideAvatar(){
+  // Para de animar (volta a ficar idle)
   var av = document.getElementById('otto-big-avatar');
-  if(av){
-    av.classList.remove('show');
-    av.classList.remove('talking');
-    av.classList.add('idle');
-  }
+  if(av) av.classList.remove('talking');
 }
 
 function setBeak(amount){
@@ -1249,8 +1311,21 @@ function startRecognition(){
     if(interim) lastInterimTranscript = interim;
 
     var display = (lastFinalTranscript + ' ' + interim).trim();
-    document.getElementById('otto-interim').textContent = display;
+
+    // Atualiza pequeno preview no input
     document.getElementById('otto-msg-input').value = display;
+
+    // E no TÍTULO grande em tempo real (responsividade!)
+    if(display){
+      var bigEl = document.getElementById('otto-big');
+      bigEl.className = 'otto-big';
+      bigEl.textContent = display.toUpperCase();
+      document.getElementById('otto-q-label').textContent = 'você está falando —';
+      document.getElementById('otto-answer').classList.remove('show');
+      document.getElementById('otto-divider').classList.remove('show');
+      var st = document.getElementById('otto-starters');
+      if(st) st.style.display = 'none';
+    }
 
     // Reset silence timer — se o usuário parar de falar por 1.5s, encerra
     if(silenceTimer) clearTimeout(silenceTimer);
