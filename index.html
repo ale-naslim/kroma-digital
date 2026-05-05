@@ -448,35 +448,7 @@ footer{
 
 
 
-/* ─── OTTO AVATAR (PNG pixel art com lipsync) ─── */
-.otto-avatar{
-  position:absolute;
-  top:8px;right:14px;
-  width:72px;height:72px;
-  pointer-events:none;
-  opacity:0;transform:scale(.85) translateY(8px);
-  transition:opacity .35s ease,transform .35s cubic-bezier(.34,1.56,.64,1);
-  z-index:20;
-}
-.otto-avatar.show{opacity:1;transform:scale(1) translateY(0)}
-@media(min-width:760px){
-  .otto-avatar{top:12px;right:24px;width:96px;height:96px}
-}
-.otto-avatar img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:contain;
-  image-rendering:pixelated;
-  image-rendering:-moz-crisp-edges;
-  -ms-interpolation-mode:nearest-neighbor;
-  display:block;
-  transition:opacity .04s linear;
-}
-.otto-avatar img.otto-open{opacity:0}
-.otto-avatar.talking .otto-closed{opacity:0}
-.otto-avatar.talking .otto-open{opacity:1}
-.otto-avatar.idle{animation:idle-bob 3.2s ease-in-out infinite}
-@keyframes idle-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+/* (avatar antigo removido — agora está embutido no FAB) */
 
 /* ─── FAB ─── */
 #otto-fab{
@@ -730,10 +702,6 @@ footer{
 </div>
 
 <div id="otto" class="page">
-  <div class="otto-avatar idle" id="otto-avatar">
-    <img class="otto-closed" src="/otto-closed.png" alt="Otto" draggable="false">
-    <img class="otto-open" src="/otto-open.png" alt="Otto falando" draggable="false">
-  </div>
   <div class="otto-topbar">
     <div class="otto-topbar-logo">KROMADIGITAL</div>
     <div class="otto-topbar-name"><span style="font-size:15px">🦆</span> OTTO</div>
@@ -786,8 +754,9 @@ footer{
   <span class="footer-copy">© 2026 Kroma Digital</span>
 </footer>
 
-<button id="otto-fab" onclick="showPage('otto',null)" title="Falar com Otto">
-  🦆
+<button id="otto-fab" class="idle-bob" onclick="showPage('otto',null)" title="Falar com Otto">
+  <img class="fab-img fab-closed" src="/otto-closed.png" alt="Otto" draggable="false">
+  <img class="fab-img fab-open" src="/otto-open.png" alt="Otto falando" draggable="false">
   <div id="otto-fab-notif">1</div>
 </button>
 
@@ -1002,28 +971,34 @@ var lipsyncRAF = null;
 var lipsyncAnalyser = null;
 
 function showAvatar(){
-  var av = document.getElementById('otto-avatar');
-  if(av){ av.classList.add('show'); av.classList.remove('idle'); }
+  var fab = document.getElementById('otto-fab');
+  if(fab){
+    fab.classList.add('expanded');
+    fab.classList.remove('idle-bob');
+    // Marca a página pra ajustar padding do input
+    var ottoPage = document.getElementById('otto');
+    if(ottoPage) ottoPage.classList.add('fab-is-expanded');
+  }
 }
 function hideAvatar(){
-  var av = document.getElementById('otto-avatar');
-  if(av){
-    av.classList.remove('show');
-    av.classList.add('idle');
-    // Reset beak
-    setBeak(0);
+  var fab = document.getElementById('otto-fab');
+  if(fab){
+    fab.classList.remove('expanded');
+    fab.classList.remove('talking');
+    fab.classList.add('idle-bob');
+    var ottoPage = document.getElementById('otto');
+    if(ottoPage) ottoPage.classList.remove('fab-is-expanded');
   }
 }
 
 function setBeak(amount){
   // amount: 0 = fechado, 1 = totalmente aberto
-  // Como temos só 2 frames (open/closed), threshold simples
-  var av = document.getElementById('otto-avatar');
-  if(!av) return;
+  var fab = document.getElementById('otto-fab');
+  if(!fab) return;
   if(amount > 0.18){
-    av.classList.add('talking');
+    fab.classList.add('talking');
   } else {
-    av.classList.remove('talking');
+    fab.classList.remove('talking');
   }
 }
 
