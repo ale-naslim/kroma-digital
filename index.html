@@ -448,26 +448,22 @@ footer{
 
 
 
-/* ─── OTTO BIG AVATAR (centralizado quando ele fala) ─── */
+/* ─── OTTO BIG AVATAR (acima do texto da fala) ─── */
 .otto-big-avatar{
-  position:absolute !important;
-  top:80px;
-  left:50%;
-  width:180px;
-  height:180px;
-  margin-left:-90px;
-  z-index:8;
+  position:relative !important;
+  display:none;
+  margin:0 auto 12px;
+  width:140px;
+  height:140px;
   pointer-events:none;
-  visibility:hidden;
   opacity:0;
-  transform:translateY(20px) scale(.7);
-  transition:opacity .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1), visibility 0s linear .4s;
+  transform:translateY(15px) scale(.7);
+  transition:opacity .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1);
 }
 .otto-big-avatar.show{
-  visibility:visible;
+  display:block;
   opacity:1;
   transform:translateY(0) scale(1);
-  transition:opacity .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1), visibility 0s linear 0s;
 }
 .otto-big-avatar img{
   position:absolute !important;
@@ -484,10 +480,10 @@ footer{
 .otto-big-avatar.talking .otto-big-closed{display:none !important}
 .otto-big-avatar.talking .otto-big-open{display:block !important}
 @media(min-width:760px){
-  .otto-big-avatar{top:100px;width:240px;height:240px;margin-left:-120px}
+  .otto-big-avatar{width:200px;height:200px;margin-bottom:16px}
 }
 @media(min-width:1100px){
-  .otto-big-avatar{top:110px;width:300px;height:300px;margin-left:-150px}
+  .otto-big-avatar{width:260px;height:260px;margin-bottom:20px}
 }
 
 /* ─── FAB pequeno (atalho fora da página Otto) ─── */
@@ -748,16 +744,16 @@ footer{
 </div>
 
 <div id="otto" class="page">
-  <div class="otto-big-avatar idle" id="otto-big-avatar">
-    <img class="otto-big-closed" src="/otto-closed.png" alt="Otto" draggable="false">
-    <img class="otto-big-open" src="/otto-open.png" alt="Otto falando" draggable="false">
-  </div>
   <div class="otto-topbar">
     <div class="otto-topbar-logo">KROMADIGITAL</div>
     <div class="otto-topbar-name"><span style="font-size:15px">🦆</span> OTTO</div>
     <div class="otto-topbar-right">ESPM · 2026</div>
   </div>
   <div class="otto-content">
+    <div class="otto-big-avatar" id="otto-big-avatar">
+      <img class="otto-big-closed" src="/otto-closed.png" alt="Otto" draggable="false">
+      <img class="otto-big-open" src="/otto-open.png" alt="Otto falando" draggable="false">
+    </div>
     <div class="otto-q-label" id="otto-q-label">pergunte algo —</div>
     <div class="otto-big empty" id="otto-big">ORNITORRINCO<br>DE PLANTÃO</div>
     <div class="otto-divider" id="otto-divider"></div>
