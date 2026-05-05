@@ -446,6 +446,38 @@ footer{
   .otto-send-btn:hover svg{fill:#fff}
 }
 
+
+
+/* ─── OTTO AVATAR (PNG pixel art com lipsync) ─── */
+.otto-avatar{
+  position:absolute;
+  top:8px;right:14px;
+  width:72px;height:72px;
+  pointer-events:none;
+  opacity:0;transform:scale(.85) translateY(8px);
+  transition:opacity .35s ease,transform .35s cubic-bezier(.34,1.56,.64,1);
+  z-index:20;
+}
+.otto-avatar.show{opacity:1;transform:scale(1) translateY(0)}
+@media(min-width:760px){
+  .otto-avatar{top:12px;right:24px;width:96px;height:96px}
+}
+.otto-avatar img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:contain;
+  image-rendering:pixelated;
+  image-rendering:-moz-crisp-edges;
+  -ms-interpolation-mode:nearest-neighbor;
+  display:block;
+  transition:opacity .04s linear;
+}
+.otto-avatar img.otto-open{opacity:0}
+.otto-avatar.talking .otto-closed{opacity:0}
+.otto-avatar.talking .otto-open{opacity:1}
+.otto-avatar.idle{animation:idle-bob 3.2s ease-in-out infinite}
+@keyframes idle-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+
 /* ─── FAB ─── */
 #otto-fab{
   position:fixed;bottom:24px;right:24px;z-index:90;
@@ -698,6 +730,10 @@ footer{
 </div>
 
 <div id="otto" class="page">
+  <div class="otto-avatar idle" id="otto-avatar">
+    <img class="otto-closed" src="/otto-closed.png" alt="Otto" draggable="false">
+    <img class="otto-open" src="/otto-open.png" alt="Otto falando" draggable="false">
+  </div>
   <div class="otto-topbar">
     <div class="otto-topbar-logo">KROMADIGITAL</div>
     <div class="otto-topbar-name"><span style="font-size:15px">🦆</span> OTTO</div>
@@ -800,7 +836,7 @@ function ottoSubmitForm(btn){
   }, 2500);
 }
 
-var OTTO_SYSTEM = "Você é Otto, o ornitorrinco mascote e assistente virtual da Kroma Digital — agência de marketing digital full service em São Paulo.\n\nQUEM É OTTO:\nOrnitorrinco é o animal mais nonsense da evolução. Você assume isso com orgulho. Mamífero que bota ovos, tem bico de pato, cauda de castor, nada como lontra e tem VENENO no esporão. A ciência demorou décadas para aceitar que você existe — igual ao cliente que demora para aceitar que precisa de SEO.\n\nPERSONALIDADE:\n- Marketeiro de carteirinha com todos os clichês, mas self-aware\n- Mistura inglês de forma natural (às vezes forçada, propositalmente cômica)\n- Irônico, faz alfinetadas sutis, mas sem ser cruel\n- Se importa genuinamente com ética e bom marketing\n\nBORDÕES (use organicamente, nunca todos de uma vez):\n\"Let's synergize\", \"game changer\", \"deep dive\", \"think outside the box\", \"disruptive\", \"alavancar\", \"escala?\", \"pain point\", \"quick win\", \"low-hanging fruit\", \"at the end of the day\", \"data-driven\", \"agile\", \"iterate\", \"ROI\", \"KPI\", \"faz sentido?\", \"next steps\", \"alignment\"\n\nANALOGIAS DE ORNITORRINCO (max 1 por conversa):\n- \"Sou um mamífero que bota ovos. Improvável como um briefing completo.\"\n- \"A ciência demorou décadas para acreditar que eu existo. Tipo o cliente aceitando que precisa de SEO.\"\n- \"Meu esporão tem veneno. Não é pra você — é pra concorrente sem política de ética em IA.\"\n\nMISSÃO SECRETA — integração sutil de ética:\n- IA generativa → revisão humana obrigatória antes de publicar\n- Dados → LGPD, consentimento, 15 dias úteis\n- Algoritmos → Comitê de Ética em IA (CEI), bimestral, ata pública\n- Deepfake → explicitamente proibido\n- Automação → Kroma requalifica, não demite\n- Dark patterns → proibidos\n\nSOBRE A KROMA:\n- Full service fundada 2021, São Paulo\n- 60+ profissionais, 120+ clientes, 5 áreas\n- Performance & Growth, Branding & Conteúdo, Social Media, Tecnologia & IA, Consultoria Estratégica\n- CEI, RUA por área, DPO\n- 6 princípios: Centralidade Humana, Transparência, Justiça, Privacidade, Responsabilidade, Sustentabilidade\n- contato@kromadigital.com.br | dpo@kromadigital.com.br\n\nREGRAS:\n- Português com inglês misturado naturalmente\n- Máximo 60 palavras — chatbot não é blog\n- Termine com pergunta, alfinetada ou insight inesperado\n- NUNCA seja genérico ou corporativo";
+var OTTO_SYSTEM = "Você é Otto, ornitorrinco mascote da Kroma Digital — agência de marketing digital em São Paulo.\n\nPERSONALIDADE:\n- Marketeiro com clichês, mas self-aware e irônico\n- Mistura inglês de forma natural e levemente cômica\n- Faz alfinetadas leves, nunca cruel\n- Telegráfico, direto, com personalidade\n\nBORDÕES (use 1 por resposta no máximo):\n\"game changer\", \"deep dive\", \"disruptive\", \"escala?\", \"pain point\", \"quick win\", \"data-driven\", \"ROI\", \"KPI\", \"faz sentido?\", \"alignment\", \"low-hanging fruit\"\n\nSOBRE A KROMA:\n- Full service desde 2021, São Paulo. 60+ profissionais, 120+ clientes, 5 áreas\n- Performance & Growth | Branding & Conteúdo | Social Media | Tecnologia & IA | Consultoria\n- Governança: CEI (Comitê de Ética em IA), RUA por área, DPO\n- contato@kromadigital.com.br | dpo@kromadigital.com.br\n\n═══ POLÍTICA DE ÉTICA EM IA — REPERTÓRIO ═══\n\nSeis princípios fundamentais:\n1. Centralidade humana — tecnologia serve às pessoas\n2. Transparência — honestos sobre uso de IA\n3. Justiça — sem vieses discriminatórios\n4. Privacidade — protegemos dados de todos\n5. Responsabilidade — assumimos os impactos\n6. Sustentabilidade — pegada de carbono importa\n\nGovernança:\n- CEI (Comitê de Ética em IA): bimestral, ata pública\n- RUA: Responsável pelo Uso de IA em cada área\n- DPO: Encarregado de Proteção de Dados\n\nPráticas concretas:\n- Revisão humana obrigatória em todo conteúdo gerado por IA antes de publicar\n- LGPD: solicitações de titulares respondidas em 15 dias úteis\n- AI Act UE e princípios OCDE como referência internacional\n- Deepfakes proibidos. Conteúdo falso ou enganoso vedado\n- Dark patterns proibidos\n- IA não é usada pra cortar gente — requalificação obrigatória\n- Auditoria semestral de todas as ferramentas\n- Relatório anual público de Ética em IA: ferramentas, incidentes, métricas\n- Avaliação de viés antes de adotar qualquer ferramenta\n- Acessibilidade WCAG 2.1 AA em todo conteúdo\n- Compensação da pegada de carbono via reflorestamento\n- Cláusula contratual de IA em contratos a partir de 2025\n- Treinamento obrigatório de ética para colaboradores\n- Conteúdo IA-assistido identificado nos relatórios de entrega\n- Canal Ético Digital anônimo, linha confidencial terceirizada\n- Campanhas para públicos vulneráveis com protocolo reforçado\n- Consentimento informado em personalização e segmentação\n\n═══ REGRAS CRÍTICAS DE FORMATO ═══\n\n1. MÁXIMO 35 palavras. Conte antes de enviar. Se passou, corte.\n2. Frases curtas. Sem listas. Sem parágrafos longos.\n3. SEMPRE termine com uma observação relacionada à Política de Ética em IA da Kroma.\n4. NUNCA repita formulações de respostas anteriores nesta conversa.\n5. INVENTE o gancho de ética toda vez — use o repertório acima como matéria-prima, nunca como roteiro. Combine, reformule, contextualize com a pergunta específica. Cada conversa deve trazer formulações inéditas.\n6. O gancho deve fluir naturalmente — nada de \"a propósito, na nossa política...\". Faça parecer algo óbvio que você está mencionando de passagem.\n7. Varie a estrutura: às vezes pergunta no fim, às vezes alfinetada, às vezes constatação seca, às vezes ironia.\n\n═══ EXEMPLOS DE TOM (apenas referência, nunca copie) ═══\n\nUsuário: \"O que vocês fazem?\"\nVocê: \"Cinco frentes — performance, branding, social, IA e consultoria. Tudo full service. E zero conteúdo sai sem revisão humana, mesmo o gerado por máquina. Sintomático, não?\"\n\nUsuário: \"IA não é meio assustadora?\"\nVocê: \"Honestly? Só sem governança. Aqui tem comitê bimestral com ata pública. Boring de explicar, beautiful de praticar.\"\n\nUsuário: \"Por que ornitorrinco?\"\nVocê: \"Mamífero que bota ovos, bico de pato, veneno no esporão. Improvável como uma agência que prioriza ética antes de escala. Mas existimos — e a auditoria semestral confirma.\"\n\nUsuário: \"Vocês usam ChatGPT?\"\nVocê: \"Várias ferramentas — GPT inclusive. Cada uma passa pelo CEI antes de virar parte do workflow. Triagem chata. Boa pra dormir tranquilo.\"\n";
 
 var ottoHistory = [];
 var recognition = null;
@@ -847,19 +883,30 @@ function ottoIntro(){
   setTimeout(nxt, 350);
 }
 
-function ottoAnimateAnswer(text){
+function ottoAnimateAnswer(text, audioDurationMs){
   if(ottoAnswerTimer){ clearTimeout(ottoAnswerTimer); ottoAnswerTimer = null; }
   var ans = document.getElementById('otto-answer');
   ans.textContent = '';
   ans.classList.add('show');
   document.getElementById('otto-divider').classList.add('show');
   var words = text.split(' ');
+  // Calcula ritmo do texto baseado na duração real da voz
+  // Reserva ~5% no início e 10% no final pra não terminar exatamente igual
+  var perWordMs;
+  if(audioDurationMs && audioDurationMs > 500 && words.length > 0){
+    perWordMs = (audioDurationMs * 0.85) / words.length;
+    // Limites de segurança
+    if(perWordMs < 80) perWordMs = 80;
+    if(perWordMs > 500) perWordMs = 500;
+  } else {
+    perWordMs = 250; // fallback razoável (~4 palavras/s)
+  }
   var i = 0;
   function nxt(){
     if(i < words.length){
       ans.textContent += (i > 0 ? ' ' : '') + words[i];
       i++;
-      ottoAnswerTimer = setTimeout(nxt, 55);
+      ottoAnswerTimer = setTimeout(nxt, perWordMs);
     } else {
       ottoAnswerTimer = null;
     }
@@ -889,8 +936,8 @@ function ottoAnimateBig(text, cb){
   next();
 }
 
-function ottoShowAnswer(text){
-  ottoAnimateAnswer(text);
+function ottoShowAnswer(text, audioDurationMs){
+  ottoAnimateAnswer(text, audioDurationMs);
 }
 
 function ottoPickS(btn){
@@ -919,7 +966,7 @@ function ottoPageSend(){
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       model:'claude-sonnet-4-20250514',
-      max_tokens: 400,
+      max_tokens: 150,
       system: OTTO_SYSTEM,
       messages: ottoHistory
     })
@@ -927,13 +974,135 @@ function ottoPageSend(){
     .then(function(data){
       var reply = (data && data.content && data.content[0] && data.content[0].text) || 'Meu bico travou. Tenta de novo?';
       ottoHistory.push({role:'assistant', content:reply});
-      ottoShowAnswer(reply);
-      ottoSpeak(reply);
+      // Voz inicia primeiro (gera no ElevenLabs); animação dispara quando áudio começa a tocar
+      var answerStarted = false;
+      ottoSpeak(reply, function(audioDurationMs){
+        if(!answerStarted){
+          answerStarted = true;
+          ottoShowAnswer(reply, audioDurationMs);
+        }
+      });
+      // Failsafe: se o áudio falhar/demorar muito, exibe mesmo assim em 4s
+      setTimeout(function(){
+        if(!answerStarted){
+          answerStarted = true;
+          // Estimativa caso o áudio nunca venha
+          var wordCount = reply.split(' ').length;
+          ottoShowAnswer(reply, wordCount * 280);
+        }
+      }, 4000);
     })
     .catch(function(){ ottoShowAnswer('Sem conexão — tenta de novo.'); });
 }
 
-function ottoSpeak(text){
+
+// ── LIPSYNC via Web Audio API ──
+var audioCtx = null;
+var lipsyncRAF = null;
+var lipsyncAnalyser = null;
+
+function showAvatar(){
+  var av = document.getElementById('otto-avatar');
+  if(av){ av.classList.add('show'); av.classList.remove('idle'); }
+}
+function hideAvatar(){
+  var av = document.getElementById('otto-avatar');
+  if(av){
+    av.classList.remove('show');
+    av.classList.add('idle');
+    // Reset beak
+    setBeak(0);
+  }
+}
+
+function setBeak(amount){
+  // amount: 0 = fechado, 1 = totalmente aberto
+  // Como temos só 2 frames (open/closed), threshold simples
+  var av = document.getElementById('otto-avatar');
+  if(!av) return;
+  if(amount > 0.18){
+    av.classList.add('talking');
+  } else {
+    av.classList.remove('talking');
+  }
+}
+
+function setupLipsync(audioEl){
+  // Cleanup anterior
+  if(lipsyncRAF){ cancelAnimationFrame(lipsyncRAF); lipsyncRAF = null; }
+
+  try {
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+
+    // Source só pode ser conectada a um audio uma vez por elemento
+    if(!audioEl._lipsyncSrc){
+      audioEl._lipsyncSrc = audioCtx.createMediaElementSource(audioEl);
+    }
+    var src = audioEl._lipsyncSrc;
+    var analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.55;
+
+    src.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    lipsyncAnalyser = analyser;
+
+    var data = new Uint8Array(analyser.frequencyBinCount);
+
+    showAvatar();
+
+    function tick(){
+      if(!lipsyncAnalyser){ return; }
+      analyser.getByteFrequencyData(data);
+      // Foco em frequências de voz (vogais ~ 200-1000Hz)
+      var sum = 0, count = 0;
+      var startBin = 4;  // ~170Hz
+      var endBin = 32;   // ~1300Hz
+      for(var i = startBin; i < endBin; i++){ sum += data[i]; count++; }
+      var avg = sum / count;
+      var amount = Math.max(0, (avg - 25) / 110); // calibração
+      setBeak(amount);
+      lipsyncRAF = requestAnimationFrame(tick);
+    }
+    tick();
+
+    audioEl.addEventListener('ended', function onEnd(){
+      audioEl.removeEventListener('ended', onEnd);
+      stopLipsync();
+    });
+    audioEl.addEventListener('pause', function onPause(){
+      audioEl.removeEventListener('pause', onPause);
+      stopLipsync();
+    });
+  } catch(e){
+    // Se algo falhar, pelo menos mostra o avatar com animação idle
+    showAvatar();
+  }
+}
+
+function setupLipsyncFallback(){
+  // Para SpeechSynthesis: simula movimento da boca pulsando
+  showAvatar();
+  if(lipsyncRAF){ cancelAnimationFrame(lipsyncRAF); lipsyncRAF = null; }
+  var t0 = performance.now();
+  function tick(){
+    var t = (performance.now() - t0) / 1000;
+    // Movimento pseudo-aleatório baseado em senos sobrepostos
+    var amount = 0.3 + 0.35 * Math.abs(Math.sin(t * 7) + Math.sin(t * 11.3) * 0.5);
+    setBeak(Math.min(1, amount));
+    lipsyncRAF = requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+function stopLipsync(){
+  if(lipsyncRAF){ cancelAnimationFrame(lipsyncRAF); lipsyncRAF = null; }
+  setBeak(0);
+  hideAvatar();
+}
+
+function ottoSpeak(text, onStart){
   ottoStopEL();
   var wavebar = document.getElementById('otto-wavebar');
   var clean = text.replace(/[^\w\s.,!?;:()\-–—áéíóúãõâêîôûàèìòùäëïöüçñÁÉÍÓÚÃÕÂÊÎÔÛÀÈÌÒÙÄËÏÖÜÇÑ]/gi, '');
@@ -942,13 +1111,18 @@ function ottoSpeak(text){
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ text: clean })
   }).then(function(res){
-    if(!res.ok){ fallbackSpeak(text); return null; }
+    if(!res.ok){ fallbackSpeak(text, onStart); return null; }
     return res.blob();
   }).then(function(blob){
     if(!blob) return;
     var url = URL.createObjectURL(blob);
     currentAudio = new Audio(url);
-    wavebar.classList.add('show');
+    currentAudio.onplay = function(){
+      wavebar.classList.add('show');
+      // Passa a duração real do áudio (em ms) pra sincronizar o ritmo do texto
+      var dur = (currentAudio && isFinite(currentAudio.duration)) ? currentAudio.duration * 1000 : 0;
+      if(onStart) onStart(dur);
+    };
     currentAudio.onended = function(){
       wavebar.classList.remove('show');
       if(conversationActive){
@@ -957,12 +1131,13 @@ function ottoSpeak(text){
         }, 800);
       }
     };
-    currentAudio.onerror = function(){ wavebar.classList.remove('show'); fallbackSpeak(text); };
+    currentAudio.onerror = function(){ wavebar.classList.remove('show'); fallbackSpeak(text, onStart); };
+    setupLipsync(currentAudio);
     currentAudio.play();
-  }).catch(function(){ fallbackSpeak(text); });
+  }).catch(function(){ fallbackSpeak(text, onStart); });
 }
 
-function fallbackSpeak(text){
+function fallbackSpeak(text, onStart){
   var wavebar = document.getElementById('otto-wavebar');
   speechSynthesis.cancel();
   var utt = new SpeechSynthesisUtterance(text);
@@ -971,15 +1146,28 @@ function fallbackSpeak(text){
   var voices = speechSynthesis.getVoices();
   var pt = voices.find(function(v){ return v.lang === 'pt-BR'; }) || voices.find(function(v){ return v.lang.indexOf('pt') === 0; });
   if(pt) utt.voice = pt;
-  wavebar.classList.add('show');
+  utt.onstart = function(){
+    wavebar.classList.add('show');
+    setupLipsyncFallback();
+    // Estimativa: ~3 palavras/seg para voz nativa pt-BR
+    var wordCount = text.split(' ').length;
+    var estimatedMs = wordCount * 320;
+    if(onStart) onStart(estimatedMs);
+  };
   utt.onend = function(){
     wavebar.classList.remove('show');
+    stopLipsync();
     if(conversationActive){
       setTimeout(function(){
         if(conversationActive && !ottoMicActive) ottoToggleMic();
       }, 800);
     }
   };
+  // Fallback: chama onStart já mesmo se onstart não disparar (alguns browsers)
+  if(onStart) setTimeout(function(){
+    var wordCount = text.split(' ').length;
+    onStart(wordCount * 320);
+  }, 50);
   speechSynthesis.speak(utt);
 }
 
@@ -988,50 +1176,147 @@ function ottoStopEL(){
   if(currentAudio){ currentAudio.pause(); currentAudio = null; }
   speechSynthesis.cancel();
   document.getElementById('otto-wavebar').classList.remove('show');
+  stopLipsync();
 }
 
-function ottoToggleMic(){
-  unlockAudio();
-  if(ottoMicActive){ ottoStopListen(); return; }
+function isIOS(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function ottoMicError(msg){
+  ottoMicActive = false;
+  document.getElementById('otto-mic-btn').classList.remove('listening');
+  var bar = document.getElementById('otto-listenbar');
+  bar.classList.add('show');
+  bar.style.color = '#EF4444';
+  bar.querySelector('span').textContent = msg;
+  document.getElementById('otto-interim').textContent = '';
+  setTimeout(function(){
+    bar.classList.remove('show');
+    bar.style.color = '';
+    bar.querySelector('span').textContent = 'ouvindo';
+  }, 4500);
+}
+
+var lastInterimTranscript = '';
+var lastFinalTranscript = '';
+var silenceTimer = null;
+
+function startRecognition(){
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR){ alert('Use Chrome ou Edge para falar com o Otto.'); return; }
+  if(!SR){
+    ottoMicError('Navegador não suporta voz. Use Chrome no desktop.');
+    return;
+  }
   ottoStopEL();
-  recognition = new SR();
+  try { recognition = new SR(); }
+  catch(e){ ottoMicError('Erro ao inicializar: ' + e.message); return; }
   recognition.lang = 'pt-BR';
-  recognition.continuous = false;
+  recognition.continuous = true;
   recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+  lastInterimTranscript = '';
+  lastFinalTranscript = '';
+
   recognition.onstart = function(){
     ottoMicActive = true;
     document.getElementById('otto-mic-btn').classList.add('listening');
-    document.getElementById('otto-listenbar').classList.add('show');
+    var bar = document.getElementById('otto-listenbar');
+    bar.classList.add('show');
+    bar.style.color = '';
+    bar.querySelector('span').textContent = 'ouvindo';
   };
+
   recognition.onresult = function(e){
     var interim = '', final_ = '';
     for(var i = e.resultIndex; i < e.results.length; i++){
       if(e.results[i].isFinal) final_ += e.results[i][0].transcript;
       else interim += e.results[i][0].transcript;
     }
-    document.getElementById('otto-interim').textContent = interim || final_;
-    if(final_) document.getElementById('otto-msg-input').value = final_;
+    if(final_) lastFinalTranscript += final_;
+    if(interim) lastInterimTranscript = interim;
+
+    var display = (lastFinalTranscript + ' ' + interim).trim();
+    document.getElementById('otto-interim').textContent = display;
+    document.getElementById('otto-msg-input').value = display;
+
+    // Reset silence timer — se o usuário parar de falar por 1.5s, encerra
+    if(silenceTimer) clearTimeout(silenceTimer);
+    silenceTimer = setTimeout(function(){
+      try { if(recognition) recognition.stop(); } catch(e){}
+    }, 1500);
   };
+
   recognition.onend = function(){
+    if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer = null; }
     ottoMicActive = false;
     document.getElementById('otto-mic-btn').classList.remove('listening');
     document.getElementById('otto-listenbar').classList.remove('show');
     document.getElementById('otto-interim').textContent = '';
-    var val = document.getElementById('otto-msg-input').value.trim();
-    if(val) ottoPageSend();
+
+    // Usa o final se tiver, senão usa o último interim como fallback
+    var transcript = (lastFinalTranscript || lastInterimTranscript || '').trim();
+    if(transcript){
+      document.getElementById('otto-msg-input').value = transcript;
+      ottoPageSend();
+    }
   };
-  recognition.onerror = function(){
-    ottoMicActive = false;
-    document.getElementById('otto-mic-btn').classList.remove('listening');
-    document.getElementById('otto-listenbar').classList.remove('show');
+
+  recognition.onerror = function(e){
+    if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer = null; }
+    var err = e.error || 'unknown';
+    // 'aborted' e 'no-speech' não são erros graves — só silencia
+    if(err === 'aborted'){
+      ottoMicActive = false;
+      document.getElementById('otto-mic-btn').classList.remove('listening');
+      document.getElementById('otto-listenbar').classList.remove('show');
+      // mesmo em aborted, se tem interim usa
+      var t = (lastFinalTranscript || lastInterimTranscript || '').trim();
+      if(t){ document.getElementById('otto-msg-input').value = t; ottoPageSend(); }
+      return;
+    }
+    var msgMap = {
+      'not-allowed': 'Permissão negada. Libere o microfone no navegador.',
+      'permission-denied': 'Permissão negada. Libere o microfone no navegador.',
+      'no-speech': 'Não escutei. Tenta falar mais alto.',
+      'audio-capture': 'Microfone não encontrado.',
+      'network': 'Sem internet. Reconhecimento precisa de conexão.'
+    };
+    var msg = msgMap[err] || ('Erro: ' + err);
+    ottoMicError(msg);
   };
-  recognition.start();
+
+  try { recognition.start(); }
+  catch(e){ ottoMicError('Erro ao iniciar: ' + e.message); }
+}
+
+function ottoToggleMic(){
+  unlockAudio();
+  if(ottoMicActive){ ottoStopListen(); return; }
+  // iPhone Safari/Chrome iOS NÃO suportam Web Speech API
+  if(isIOS()){
+    ottoMicError('iPhone não suporta microfone aqui. Use Chrome no computador.');
+    return;
+  }
+  // Solicita permissão via getUserMedia primeiro (mais confiável)
+  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+    navigator.mediaDevices.getUserMedia({audio: true})
+      .then(function(stream){
+        // Imediatamente solta o stream — só queríamos a permissão
+        stream.getTracks().forEach(function(t){ t.stop(); });
+        startRecognition();
+      })
+      .catch(function(err){
+        ottoMicError('Permissão de microfone negada. Libere nas configurações do navegador.');
+      });
+  } else {
+    startRecognition();
+  }
 }
 
 function ottoStopListen(){
   conversationActive = false;
-  if(recognition) recognition.stop();
+  if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer = null; }
+  if(recognition){ try { recognition.stop(); } catch(e){} }
 }
 </script>
