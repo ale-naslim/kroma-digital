@@ -349,31 +349,39 @@ footer{
 }
 @media(min-width:760px){.otto-content{padding:28px 28px 0}}
 
-.otto-q-label{font-size:11px;letter-spacing:.14em;color:#AAA5A0;text-transform:uppercase;margin-bottom:14px;transition:color .25s ease, font-size .3s ease, letter-spacing .3s ease}
-.otto-q-label.loading{
-  color:#7C3AED;
-  font-size:22px;
-  letter-spacing:.04em;
-  text-transform:none;
+.otto-q-label{font-size:11px;letter-spacing:.14em;color:#AAA5A0;text-transform:uppercase;margin-bottom:14px}
+@keyframes loading-pulse{0%,100%{opacity:.55}50%{opacity:1}}
+
+/* Loading message — abaixo do texto gigante da pergunta */
+.otto-loading-message{
+  display:none;
   font-family:'Syne',sans-serif;
+  font-size:22px;
+  color:#7C3AED;
   font-weight:500;
   font-style:italic;
+  letter-spacing:.005em;
+  line-height:1.2;
+  margin-top:18px;
   animation:loading-pulse 1.4s ease-in-out infinite;
 }
+.otto-loading-message.show{display:block}
 @media(min-width:760px){
-  .otto-q-label.loading{font-size:28px}
+  .otto-loading-message{font-size:28px;margin-top:24px}
 }
 @media(min-width:1100px){
-  .otto-q-label.loading{font-size:34px}
+  .otto-loading-message{font-size:34px;margin-top:30px}
 }
-@keyframes loading-pulse{0%,100%{opacity:.55}50%{opacity:1}}
 .otto-big{
   font-family:'Syne',sans-serif;
-  font-size:clamp(40px,12vw,64px);line-height:.95;
+  font-size:clamp(32px,10vw,64px);line-height:.95;
   color:#0A0A0A;font-weight:800;letter-spacing:-.025em;
-  text-transform:uppercase;overflow:hidden;
+  text-transform:uppercase;
+  word-break:break-word;
+  overflow-wrap:anywhere;
+  hyphens:auto;
 }
-.otto-big.empty{font-size:clamp(34px,9vw,52px);color:#C8C3BB}
+.otto-big.empty{font-size:clamp(28px,8vw,52px);color:#C8C3BB}
 .otto-cursor-blink{display:inline-block;width:3px;height:.82em;background:#7C3AED;vertical-align:middle;margin-left:3px;animation:oblk .8s step-end infinite}
 @keyframes oblk{0%,100%{opacity:1}50%{opacity:0}}
 .otto-divider{width:32px;height:0.5px;background:#C8C3BB;margin:14px 0;flex-shrink:0;opacity:0;transition:opacity .25s}
@@ -787,6 +795,7 @@ footer{
     </div>
     <div class="otto-q-label" id="otto-q-label">pergunte algo —</div>
     <div class="otto-big empty" id="otto-big">ORNITORRINCO<br>DE PLANTÃO</div>
+    <div class="otto-loading-message" id="otto-loading-message"></div>
     <div class="otto-divider" id="otto-divider"></div>
     <div class="otto-answer" id="otto-answer"></div>
   </div>
@@ -932,26 +941,25 @@ var loadingIndex = 0;
 
 function startLoadingMessages(){
   stopLoadingMessages();
-  // embaralha pra não repetir sempre na mesma ordem
   loadingIndex = Math.floor(Math.random() * LOADING_MESSAGES.length);
-  var label = document.getElementById('otto-q-label');
-  if(label){
-    label.textContent = LOADING_MESSAGES[loadingIndex] + '…';
-    label.classList.add('loading');
+  var el = document.getElementById('otto-loading-message');
+  if(el){
+    el.textContent = LOADING_MESSAGES[loadingIndex] + '…';
+    el.classList.add('show');
   }
   loadingTimer = setInterval(function(){
     loadingIndex = (loadingIndex + 1) % LOADING_MESSAGES.length;
-    var lbl = document.getElementById('otto-q-label');
+    var lbl = document.getElementById('otto-loading-message');
     if(lbl) lbl.textContent = LOADING_MESSAGES[loadingIndex] + '…';
   }, 2200);
 }
 
 function stopLoadingMessages(){
   if(loadingTimer){ clearInterval(loadingTimer); loadingTimer = null; }
-  var label = document.getElementById('otto-q-label');
-  if(label){
-    label.classList.remove('loading');
-    // será sobrescrito por "você perguntou —" quando ottoShowAnswer roda
+  var el = document.getElementById('otto-loading-message');
+  if(el){
+    el.classList.remove('show');
+    el.textContent = '';
   }
 }
 
@@ -1030,12 +1038,8 @@ function ottoAnimateBig(text, cb){
 }
 
 function ottoShowAnswer(text, audioDurationMs){
-  // Reseta o label pro estado normal
   var label = document.getElementById('otto-q-label');
-  if(label){
-    label.classList.remove('loading');
-    label.textContent = 'você perguntou —';
-  }
+  if(label) label.textContent = 'você perguntou —';
   ottoAnimateAnswer(text, audioDurationMs);
 }
 
