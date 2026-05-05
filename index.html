@@ -448,27 +448,73 @@ footer{
 
 
 
-/* (avatar antigo removido — agora está embutido no FAB) */
+/* ─── OTTO BIG AVATAR (centralizado quando ele fala) ─── */
+.otto-big-avatar{
+  position:absolute !important;
+  top:80px;
+  left:50%;
+  width:180px;
+  height:180px;
+  margin-left:-90px;
+  z-index:8;
+  pointer-events:none;
+  visibility:hidden;
+  opacity:0;
+  transform:translateY(20px) scale(.7);
+  transition:opacity .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1), visibility 0s linear .4s;
+}
+.otto-big-avatar.show{
+  visibility:visible;
+  opacity:1;
+  transform:translateY(0) scale(1);
+  transition:opacity .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1), visibility 0s linear 0s;
+}
+.otto-big-avatar img{
+  position:absolute !important;
+  top:0; left:0;
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain;
+  image-rendering:pixelated;
+  image-rendering:-moz-crisp-edges;
+  -ms-interpolation-mode:nearest-neighbor;
+  display:block;
+}
+.otto-big-avatar .otto-big-open{display:none !important}
+.otto-big-avatar.talking .otto-big-closed{display:none !important}
+.otto-big-avatar.talking .otto-big-open{display:block !important}
+@media(min-width:760px){
+  .otto-big-avatar{top:100px;width:240px;height:240px;margin-left:-120px}
+}
+@media(min-width:1100px){
+  .otto-big-avatar{top:110px;width:300px;height:300px;margin-left:-150px}
+}
 
-/* ─── FAB ─── */
+/* ─── FAB pequeno (atalho fora da página Otto) ─── */
 #otto-fab{
   position:fixed;bottom:24px;right:24px;z-index:90;
-  width:64px;height:64px;border-radius:50%;
-  background:#0A0A0A;border:none;cursor:pointer;
-  box-shadow:0 6px 20px rgba(0,0,0,.2);
-  display:flex;align-items:center;justify-content:center;font-size:28px;
-  transition:transform .2s,background .2s;
+  width:60px;height:60px;border-radius:50%;
+  background:#7C3AED;border:none;cursor:pointer;
+  box-shadow:0 6px 22px rgba(124,58,237,.45);
+  display:flex;align-items:center;justify-content:center;
+  padding:0;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
 }
-#otto-fab:active,#otto-fab:hover{transform:scale(1.08);background:#7C3AED}
-#otto-fab-notif{
-  position:absolute;top:-2px;right:-2px;width:18px;height:18px;
-  background:#7C3AED;border-radius:50%;font-size:10px;font-weight:700;
-  color:#fff;display:flex;align-items:center;justify-content:center;
-  border:2px solid #EEEAE4;
+#otto-fab:hover{box-shadow:0 8px 28px rgba(124,58,237,.6);transform:scale(1.05)}
+#otto-fab .fab-img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:contain;
+  image-rendering:pixelated;
+  image-rendering:-moz-crisp-edges;
+  -ms-interpolation-mode:nearest-neighbor;
+  display:block;
+  padding:6px;
+  pointer-events:none;
 }
-@media(min-width:760px){#otto-fab{bottom:24px;right:24px}}
+@media(min-width:760px){#otto-fab{width:68px;height:68px}}
 
-/* Hide FAB when on Otto page (redundant + overlaps with input) */
+/* Hide FAB when on Otto page (já estamos lá) */
 #otto.page.active ~ #otto-fab{display:none}
 </style>
 
@@ -760,7 +806,6 @@ footer{
 
 <button id="otto-fab" onclick="showPage('otto',null)" title="Falar com Otto">
   <img class="fab-img fab-closed" src="/otto-closed.png" alt="Otto" draggable="false">
-  <div id="otto-fab-notif">1</div>
 </button>
 
 <script>
@@ -781,8 +826,6 @@ function showPage(id, link){
   if(link) link.classList.add('active');
   window.scrollTo(0, 0);
   if(id === 'otto'){
-    var notif = document.getElementById('otto-fab-notif');
-    if(notif) notif.style.display = 'none';
     setTimeout(ottoIntro, 250);
   } else {
     conversationActive = false;
