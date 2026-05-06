@@ -1490,12 +1490,12 @@ function startRecognition(){
 function ottoToggleMic(){
   unlockAudio();
   if(ottoMicActive){ ottoStopListen(); return; }
-  // iOS: usa MediaRecorder + Whisper API (Web Speech API é instável no iOS)
+  // iOS: microfone não funciona bem. Direciona usuário pro desktop.
   if(isIOS()){
-    startWhisperRecording();
+    ottoMicError('Microfone só funciona no Chrome do computador. Digite sua pergunta abaixo.');
     return;
   }
-  // Desktop/Android: Web Speech API (rápido, gratuito, em tempo real)
+  // Desktop/Android: Web Speech API
   if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
     navigator.mediaDevices.getUserMedia({audio: true})
       .then(function(stream){
@@ -1510,131 +1510,9 @@ function ottoToggleMic(){
   }
 }
 
-// ── WHISPER (caminho iOS) ──
-var mediaRecorder = null;
-var mediaStream = null;
-var audioChunks = [];
-
-function startWhisperRecording(){
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    ottoMicError('Microfone não disponível neste navegador.');
-    return;
-  }
-  if(typeof MediaRecorder === 'undefined'){
-    ottoMicError('Gravador de áudio não disponível neste navegador.');
-    return;
-  }
-  navigator.mediaDevices.getUserMedia({audio: true})
-    .then(function(stream){
-      mediaStream = stream;
-      // Detecta o melhor formato suportado
-      var mimeType = '';
-      var candidates = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'];
-      for(var i = 0; i < candidates.length; i++){
-        if(MediaRecorder.isTypeSupported(candidates[i])){
-          mimeType = candidates[i];
-          break;
-        }
-      }
-      try {
-        mediaRecorder = mimeType
-          ? new MediaRecorder(stream, {mimeType: mimeType})
-          : new MediaRecorder(stream);
-      } catch(e){
-        ottoMicError('Erro ao iniciar gravador: ' + e.message);
-        cleanupMediaStream();
-        return;
-      }
-      audioChunks = [];
-      mediaRecorder.ondataavailable = function(e){
-        if(e.data && e.data.size > 0) audioChunks.push(e.data);
-      };
-      mediaRecorder.onstop = handleWhisperStop;
-      mediaRecorder.onerror = function(e){
-        ottoMicError('Erro na gravação');
-        cleanupMediaStream();
-      };
-      mediaRecorder.start();
-      ottoMicActive = true;
-      document.getElementById('otto-mic-btn').classList.add('listening');
-      var bar = document.getElementById('otto-listenbar');
-      if(bar){
-        bar.classList.add('show');
-        bar.style.color = '';
-        var span = bar.querySelector('span');
-        if(span) span.textContent = 'gravando — toque pra parar';
-      }
-    })
-    .catch(function(err){
-      ottoMicError('Permissão de microfone negada. Vá em Ajustes do iOS > Safari > Microfone.');
-    });
-}
-
-function handleWhisperStop(){
-  cleanupMediaStream();
-  ottoMicActive = false;
-  document.getElementById('otto-mic-btn').classList.remove('listening');
-
-  if(audioChunks.length === 0){
-    var bar = document.getElementById('otto-listenbar');
-    if(bar) bar.classList.remove('show');
-    return;
-  }
-
-  // Mostra "transcrevendo..." pro usuário
-  var bar = document.getElementById('otto-listenbar');
-  if(bar){
-    bar.classList.add('show');
-    bar.style.color = '#7C3AED';
-    var span = bar.querySelector('span');
-    if(span) span.textContent = 'transcrevendo';
-  }
-
-  var blob = new Blob(audioChunks, {type: mediaRecorder.mimeType || 'audio/mp4'});
-  audioChunks = [];
-
-  fetch('/api/transcribe', {
-    method: 'POST',
-    headers: {'Content-Type': mediaRecorder.mimeType || 'audio/mp4'},
-    body: blob
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    if(bar) bar.classList.remove('show');
-    if(data.error){
-      ottoMicError('Erro Whisper: ' + data.error);
-      return;
-    }
-    var text = (data.text || '').trim();
-    if(!text){
-      ottoMicError('Não consegui entender. Tenta de novo.');
-      return;
-    }
-    document.getElementById('otto-msg-input').value = text;
-    ottoPageSend();
-  })
-  .catch(function(err){
-    if(bar) bar.classList.remove('show');
-    ottoMicError('Erro ao enviar áudio: ' + err.message);
-  });
-}
-
-function cleanupMediaStream(){
-  if(mediaStream){
-    mediaStream.getTracks().forEach(function(t){ t.stop(); });
-    mediaStream = null;
-  }
-  mediaRecorder = null;
-}
-
 function ottoStopListen(){
   conversationActive = false;
   if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer = null; }
-  // Web Speech API (desktop)
   if(recognition){ try { recognition.stop(); } catch(e){} }
-  // MediaRecorder (iOS)
-  if(mediaRecorder && mediaRecorder.state === 'recording'){
-    try { mediaRecorder.stop(); } catch(e){}
-  }
 }
 </script>
